@@ -1,0 +1,444 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+        <title>Haskell Boot Camp</title>
+        <link type="text/css" rel="stylesheet" href="assets/css/show.css" />
+        <link type="text/css" rel="stylesheet" href="assets/css/prettify.css" />
+        <script type="text/javascript" src="assets/js/jquery.min.js"></script>
+        <script type="text/javascript" src="assets/js/show.js"></script>
+        <script type="text/javascript" src="assets/js/prettify/prettify.js"></script>
+        <script type="text/javascript" src="assets/js/prettify/lang-apollo.js"></script><script type="text/javascript" src="assets/js/prettify/lang-css.js"></script><script type="text/javascript" src="assets/js/prettify/lang-hs.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lisp.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lua.js"></script><script type="text/javascript" src="assets/js/prettify/lang-ml.js"></script><script type="text/javascript" src="assets/js/prettify/lang-proto.js"></script><script type="text/javascript" src="assets/js/prettify/lang-scala.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vb.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vhdl.js"></script><script type="text/javascript" src="assets/js/prettify/lang-wiki.js"></script><script type="text/javascript" src="assets/js/prettify/lang-yaml.js"></script><link type="text/css" rel="stylesheet" href="css/custom.css?1356693341030" />
+      <script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+      </head>
+      <body>
+        <div id="slides">
+          <div id="reel">
+            <div class="content" id="slide-0">
+       <div class="container"><h1 id="Haskell+Boot+Camp">Haskell Boot Camp</h1><p>@j5ik2o
+</p></div>
+      </div><div class="content" id="slide-1">
+       <div class="container"><h1 id="%E3%82%A2%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%80">アジェンダ</h1><ul><li><p>なんとなくモナドを理解できるところまで。
+</p><ul><li>Functor
+</li><li>Applicative Functor
+</li><li>Monoid
+</li><li>Monad
+</li></ul></li></ul></div>
+      </div><div class="content" id="slide-2">
+       <div class="container"><p>聞いてるだけじゃ面白くないので、リアルタイムにツッコミ入れてください
+</p></div>
+      </div><div class="content" id="slide-3">
+       <div class="container"><h1 id="Functor">Functor</h1></div>
+      </div><div class="content" id="slide-4">
+       <div class="container"><p>写像を作り出すための型クラス
+</p></div>
+      </div><div class="content" id="slide-5">
+       <div class="container"><h2 id="%E3%83%AA%E3%82%B9%E3%83%88%E3%81%AE%E5%80%A4%E3%82%922%E5%80%8D%E3%81%99%E3%82%8B%E5%87%A6%E7%90%86">リストの値を2倍する処理</h2><pre><code class="prettyprint lang-haskell">ghci&gt; fmap (*2) [1..5]
+[2,4,6,8,10]
+</code></pre></div>
+      </div><div class="content" id="slide-6">
+       <div class="container"><h2 id="fmap%E3%81%AE%E5%AE%9A%E7%BE%A9">fmapの定義</h2><pre><code class="prettyprint lang-haskell">ghci&gt; :t fmap
+fmap :: Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</code></pre></div>
+      </div><div class="content" id="slide-7">
+       <div class="container"><h2 id="Functor%E5%9E%8B%E3%82%AF%E3%83%A9%E3%82%B9">Functor型クラス</h2><pre><code class="prettyprint lang-haskell">class Functor f where
+  fmap :: (a -&gt; b) -&gt; f a -&gt; f b
+</code></pre></div>
+      </div><div class="content" id="slide-8">
+       <div class="container"><h2 id="%E3%83%AA%E3%82%B9%E3%83%88%E3%81%AE%E5%AE%9F%E8%A3%85">リストの実装</h2><pre><code class="prettyprint lang-haskell">instance Functor [] where
+    fmap = map
+
+map :: (a -&gt; b) -&gt; [a] -&gt; [b]
+map _ []     = []
+map f (x:xs) = f x : map f xs
+</code></pre></div>
+      </div><div class="content" id="slide-9">
+       <div class="container"><h2 id="%E3%83%95%E3%82%A1%E3%83%B3%E3%82%AF%E3%82%BF%E3%83%BC%E5%89%87">ファンクター則</h2><ul><li>idでファンクター値を写した場合、ファンクター値が変化してはならない
+</li></ul><pre><code class="prettyprint lang-haskell">ghci&gt; fmap id (Just 3)
+Just 3
+ghci&gt; id $ Just 3
+Just 3
+ghci&gt; fmap id [1..5]
+[1,2,3,4,5]
+ghci&gt; id [1..5]
+[1,2,3,4,5]
+ghci&gt; fmap id []
+[]
+ghci&gt; fmap id Nothing
+Nothing
+</code></pre></div>
+      </div><div class="content" id="slide-10">
+       <div class="container"><h2 id="%E3%83%95%E3%82%A1%E3%83%B3%E3%82%AF%E3%82%BF%E3%83%BC%E5%89%87">ファンクター則</h2><p>「<code>f</code>と<code>g</code>の合成関数でファンクター値を写したもの」と、「まず<code>g</code>、次に<code>f</code>でファンクター値を写したもの」が等しいこと
+</p><pre><code class="prettyprint lang-haskell">fmap (f . g) = fmap f . fmap g
+</code></pre><p>ファンクター値xに対して次が成り立つ必要がある
+</p><pre><code class="prettyprint lang-haskell">fmap (f . g) x = fmap f (fmap g x)
+</code></pre></div>
+      </div><div class="content" id="slide-11">
+       <div class="container"><h2 id="Functor">Functor</h2><ul><li>Functor値を、関数を適用して別の値に変換させる。つまり写像を作るための型クラス。
+</li><li><code>(a -&gt; b)</code>なので、変換で値の型が変わってもよいことを意味する。
+</li></ul></div>
+      </div><div class="content" id="slide-12">
+       <div class="container"><h2 id="Functor+Option">Functor Option</h2><pre><code class="prettyprint lang-haskell">data Option a = None | Some a deriving(Eq, Ord, Read, Show)
+</code></pre></div>
+      </div><div class="content" id="slide-13">
+       <div class="container"><h3 id="%E5%AE%9F%E8%A3%85%E4%BE%8B">実装例</h3><pre><code class="prettyprint lang-haskell">data Option a = None | Some a deriving (Show)
+
+instance Functor Option where
+  fmap f (Some x) = Some (f x)
+  fmap f None = None
+
+getOrElse :: a -&gt; Option a -&gt; a
+getOrElse v None = v
+getOrElse _ (Some x) = x
+</code></pre></div>
+      </div><div class="content" id="slide-14">
+       <div class="container"><p>利用例
+</p><pre><code class="prettyprint lang-haskell">ghci&gt; :l Option.hs
+ghci&gt; getOrElse 0 $ Some 1
+1
+ghci&gt; getOrElse 0 None
+0
+ghci&gt; fmap (+1) $ Some 1
+Some 2
+ghci&gt; fmap (+1) None
+None
+</code></pre></div>
+      </div><div class="content" id="slide-15">
+       <div class="container"><h1 id="Applicative+Functor">Applicative Functor</h1></div>
+      </div><div class="content" id="slide-16">
+       <div class="container"><p>強化版のFunctor
+</p></div>
+      </div><div class="content" id="slide-17">
+       <div class="container"><pre><code class="prettyprint lang-haskell">class Functor f where
+  fmap :: (a -&gt; b) -&gt; f a -&gt; f b
+</code></pre><pre><code class="prettyprint lang-haskell">class (Functor f) =&gt; Applicative f where
+   pure  :: a -&gt; f a
+   (&lt;*&gt;) :: f (a -&gt; b) -&gt; f a -&gt; f b
+</code></pre></div>
+      </div><div class="content" id="slide-18">
+       <div class="container"><p>少し話題が逸れるが、
+2項演算子をfmapするとFunctorに関数が格納される。
+関数も値なのでこんなことは普通にできる。
+</p><pre><code class="prettyprint lang-haskell">ghci&gt; let b = fmap (+) $ Just 1
+ghci&gt; :t b
+b :: Maybe (Integer -&gt; Integer)
+</code></pre><p>そのFunctorに関数を適用すると計算が可能。
+</p><pre><code class="prettyprint lang-haskell">ghci&gt; fmap (\f -&gt; f 1) b
+Just 2
+</code></pre></div>
+      </div><div class="content" id="slide-19">
+       <div class="container"><p>Applicativeの関数を使えば、これをもっと簡単に実現できます
+</p><pre><code class="prettyprint lang-haskell">ghci&gt; Just (+1) &lt;*&gt; Just (1)
+Just (2)
+</code></pre><p>他の例
+</p><pre><code class="prettyprint lang-haskell">ghci&gt; pure (+3) &lt;*&gt; Just 10
+Just 13
+ghci&gt; Just (+++&quot;hahaha&quot;) &lt;*&gt; Nothing
+Nothing
+ghci&gt; Nothing &lt;*&gt; Just &quot;woot&quot;
+Nothing
+</code></pre></div>
+      </div><div class="content" id="slide-20">
+       <div class="container"><p><code>&lt;*&gt;</code>は連続して使うことができる
+</p><pre><code class="prettyprint lang-haskell">ghci&gt; pure (+) &lt;*&gt; Just 3 &lt;*&gt; Just 5
+Just 8
+ghci&gt; pure (+) &lt;*&gt; Just 3 &lt;*&gt; Nothing
+Nothing
+ghci&gt; pure (+) &lt;*&gt; Nothing &lt;*&gt; Just 5
+Nothing
+</code></pre></div>
+      </div><div class="content" id="slide-21">
+       <div class="container"><pre><code class="prettyprint lang-haskell">pure f &lt;*&gt; x &lt;*&gt; y
+</code></pre><p>は
+</p><pre><code class="prettyprint lang-haskell">fmap f x &lt;*&gt; y
+</code></pre><p>のように記述できる
+</p><p>Control.Applicativeにはfmap相当の<code>&lt;$&gt;</code>が定義されている。
+</p><pre><code class="prettyprint lang-haskell">(&lt;$&gt;) :: (Functor f) =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+f &lt;$&gt; x = fmap f x
+</code></pre><pre><code class="prettyprint lang-haskell">ghci&gt; (++) &lt;$&gt; Just &quot;Junichi&quot; &lt;*&gt; Just &quot;Kato&quot;
+Just &quot;JunichiKato&quot;
+
+ghci&gt; (++) &quot;Junichi&quot; &quot;Kato&quot;
+&quot;JunichiKato&quot;
+</code></pre></div>
+      </div><div class="content" id="slide-22">
+       <div class="container"><h2 id="Applicative+Functor">Applicative Functor</h2><ul><li>Functorまま関数適用が可能になる
+</li></ul></div>
+      </div><div class="content" id="slide-23">
+       <div class="container"><h2 id="Applicative+Option">Applicative Option</h2><pre><code class="prettyprint lang-haskell">instance Applicative Option where
+    pure = Just
+    None &lt;*&gt; _ = None
+    (Just f) &lt;*&gt; something = fmap f something
+</code></pre><p>利用例
+</p><pre><code class="prettyprint lang-haskell">ghci&gt; :l Option.hs
+ghci&gt; pure (+) &lt;*&gt; Some 3 &lt;*&gt; Some 5
+Some 8
+ghci&gt; pure (+) &lt;*&gt; Some 3 &lt;*&gt; None
+None
+</code></pre></div>
+      </div><div class="content" id="slide-24">
+       <div class="container"><h1 id="Monoid">Monoid</h1></div>
+      </div><div class="content" id="slide-25">
+       <div class="container"><p>二項演算と単位元を持つ代数的データ構造
+</p></div>
+      </div><div class="content" id="slide-26">
+       <div class="container"><p>1 は * の単位元、[] は ++ の単位元
+</p><pre><code class="prettyprint lang-haskell">ghci&gt; 5 * 1
+5
+ghci&gt; [1,2,3] ++ []
+[1,2,3]
+</code></pre></div>
+      </div><div class="content" id="slide-27">
+       <div class="container"><ul><li>mempty は モノイドの単位元
+</li><li><p>mappend は モノイド固有の二項演算関数
+</p><ul><li>付け足すという意味ではない。2つのモノイド値を取って第三のモノイド値を返す関数。
+</li></ul></li><li>mconcatはモノイドのリストをmappendで畳み込んだ、モノイド値を返す関数。
+</li></ul><pre><code class="prettyprint lang-haskell">class Monoid m where
+  mempty :: m
+  mappend :: m -&gt; m -&gt; m
+  mconcat :: [m] -&gt; m
+  mconcat = foldr mappend mempty
+</code></pre></div>
+      </div><div class="content" id="slide-28">
+       <div class="container"><p>リストはモノイド
+</p><pre><code class="prettyprint lang-haskell">instance Monoid [a] where
+  mempty = []
+  mappend = (++)
+</code></pre></div>
+      </div><div class="content" id="slide-29">
+       <div class="container"><p>文字列もリスト
+</p><pre><code class="prettyprint lang-haskell">ghci&gt; [1,2,3] `mappend` [4,5,6]
+[1,2,3,4,5,6]
+ghci&gt; (&quot;one&quot; `mappend` &quot;two&quot;) `mappend` &quot;tree&quot;
+&quot;onetwotree&quot;
+</code></pre></div>
+      </div><div class="content" id="slide-30">
+       <div class="container"><p>関数の適用順序を変えても結果が変わらない。結合的という。
+</p><pre><code class="prettyprint lang-haskell">ghci&gt; (&quot;one&quot; `mappend` &quot;two&quot;) `mappend` &quot;tree&quot;
+&quot;onetwotree&quot;
+ghci&gt; &quot;one&quot; `mappend` (&quot;two&quot; `mappend` &quot;tree&quot;)
+&quot;onetwotree&quot;
+ghci&gt; &quot;one&quot; `mappend` &quot;two&quot; `mappend` &quot;tree&quot;
+&quot;onetwotree&quot;
+</code></pre></div>
+      </div><div class="content" id="slide-31">
+       <div class="container"><pre><code class="prettyprint lang-haskell">ghci&gt; &quot;pang&quot; `mappend` mempty
+&quot;pang&quot;
+ghci&gt; mconcat [[1,2],[3,6],[9]]
+[1,2,3,6,9]
+ghci&gt; mempty :: [a]
+[]
+</code></pre></div>
+      </div><div class="content" id="slide-32">
+       <div class="container"><h2 id="%E3%83%A2%E3%83%8E%E3%82%A4%E3%83%89%E5%89%87">モノイド則</h2><ul><li><p>単位元のための法則
+</p><ul><li><code>mempty `mappend` x = x</code>
+</li><li><code>x `mappend` mempty = x</code>
+</li></ul></li><li><p>mappendが結合的であることを表す法則
+</p><ul><li><code>(x `mappend` y) `mappend` z = x `mappend` (y `mappend` z)</code>
+</li></ul></li></ul></div>
+      </div><div class="content" id="slide-33">
+       <div class="container"><h2 id="Monoid+Option">Monoid Option</h2><pre><code class="prettyprint lang-haskell">data Option a = None | Some a deriving (Show)
+
+instance Monoid a =&gt; Monoid (Option a) where
+    mempty = None
+    None `mappend` m = m
+    m `mappend` None = m
+    Some m1 `mappend` Some m2 = Some (m1 `mappend` m2)
+</code></pre><p>利用例
+</p><pre><code class="prettyprint lang-haskell">ghci&gt; None `mappend` Some &quot;abc&quot;
+Some &quot;abc&quot;
+ghci&gt; Some LT `mappend` None
+Some LT
+ghci&gt; Some (Sum 3) `mappend` Some (Sum 4)
+Some (Sum {getSum = 7})
+</code></pre></div>
+      </div><div class="content" id="slide-34">
+       <div class="container"><h1 id="Monad">Monad</h1><p>Applicative Functorの強化版らしい
+</p></div>
+      </div><div class="content" id="slide-35">
+       <div class="container"><p>(Applicative m) =&gt; がついてない…。
+</p><pre><code class="prettyprint lang-haskell">class Monad m where
+    return :: a -&gt; m a
+    (&gt;&gt;=) :: m a -&gt; (a -&gt; m b) -&gt; m b
+    (&gt;&gt;) :: m a -&gt; m b -&gt; m b
+    ￼x &gt;&gt; y = x &gt;&gt;= \_ -&gt; y
+    fail :: String -&gt; m a
+</code></pre></div>
+      </div><div class="content" id="slide-36">
+       <div class="container"><h2 id="Monad+Option">Monad Option</h2><pre><code class="prettyprint lang-haskell">data Option a = None | Some a deriving (Show)
+
+instance Monad Option where
+    return = Some
+    None &gt;&gt;= f = None
+    Some x &gt;&gt;= f = f x
+</code></pre></div>
+      </div><div class="content" id="slide-37">
+       <div class="container"><h3 id="%E5%88%A9%E7%94%A8%E4%BE%8B">利用例</h3><p>pureと同じ使い方
+</p><pre><code class="prettyprint lang-haskell">ghci&gt; return &quot;WHAT&quot; :: Option String
+Some &quot;WHAT&quot;
+</code></pre></div>
+      </div><div class="content" id="slide-38">
+       <div class="container"><p>Some の場合に xに9が渡され、Some (90)が返される
+</p><pre><code class="prettyprint lang-haskell">ghci&gt; Some 9 &gt;&gt;= \x -&gt; return (x*10)
+Some 90
+</code></pre></div>
+      </div><div class="content" id="slide-39">
+       <div class="container"><p>Noneの場合は関数は適用されずにNoneが返される
+</p><pre><code class="prettyprint lang-haskell">ghci&gt; None &gt;&gt;= \x -&gt; return (x*10)
+None
+</code></pre></div>
+      </div><div class="content" id="slide-40">
+       <div class="container"><p>引数を利用しないで値を返したい場合
+</p><pre><code class="prettyprint lang-haskell">ghci&gt; Some 1 &gt;&gt; None
+None
+ghci&gt; Some 1 &gt;&gt;= \_ -&gt; None
+None
+</code></pre><pre><code class="prettyprint lang-haskell">(&gt;&gt;) :: (Monad m) =&gt; m a -&gt; m b -&gt; m b
+m &gt;&gt; n = m &gt;&gt;= \_-&gt;n
+</code></pre></div>
+      </div><div class="content" id="slide-41">
+       <div class="container"><p>Some (Some 1)の中の値を二乗しSomeでラップして返す。
+</p><pre><code class="prettyprint lang-haskell">square = case Some (Some 1) of
+         None -&gt; None
+         Some x -&gt; case x of
+                   None -&gt; None
+                   Some x -&gt; Some $ x * x
+</code></pre></div>
+      </div><div class="content" id="slide-42">
+       <div class="container"><p>モナドの関数を使うとこんな簡単に書ける
+</p><pre><code class="prettyprint lang-haskell">square = Some (Some 1) &gt;&gt;= \x -&gt; x &gt;&gt;= \y -&gt; return (y * y)
+</code></pre></div>
+      </div><div class="content" id="slide-43">
+       <div class="container"><h2 id="do%E5%BC%8F">do式</h2><pre><code class="prettyprint lang-haskell">square = do
+          x &lt;- Some (Some 1)
+          y &lt;- x
+          return y * y
+</code></pre></div>
+      </div><div class="content" id="slide-44">
+       <div class="container"><h2 id="Monad">Monad</h2><p>文脈に通常の値を取る関数を適用し別の文脈に変換することができる
+</p></div>
+      </div><div class="content" id="slide-45">
+       <div class="container"><h2 id="%E3%83%A2%E3%83%8A%E3%83%89%E5%89%87">モナド則</h2></div>
+      </div><div class="content" id="slide-46">
+       <div class="container"><h3 id="%E5%B7%A6%E6%81%92%E7%AD%89%E6%80%A7">左恒等性</h3><ul><li><code>return x &gt;&gt;= f</code>と<code>f x</code>が同じであること
+</li></ul><pre><code class="prettyprint lang-haskell">ghci&gt; return 3 &gt;&gt;= (\x -&gt; Just (x+1))
+Just 4
+ghci&gt; (\x -&gt; Just (x+1)) 3
+Just 4
+</code></pre></div>
+      </div><div class="content" id="slide-47">
+       <div class="container"><h3 id="%E5%8F%B3%E6%81%92%E7%AD%89%E6%80%A7">右恒等性</h3><ul><li><code>m &gt;&gt;= return</code> と <code>m</code> が等しいこと
+</li></ul><pre><code class="prettyprint lang-haskell">ghci&gt; Just &quot;move on up&quot; &gt;&gt;= return
+Just &quot;move on up&quot;
+ghci&gt; [1,2,3,4] &gt;&gt;= return
+[1,2,3,4]
+</code></pre></div>
+      </div><div class="content" id="slide-48">
+       <div class="container"><h3 id="%E7%B5%90%E5%90%88%E6%B3%95%E5%89%87">結合法則</h3><ul><li><code>(m &gt;&gt;= f) &gt;&gt;= g</code> と <code>m &gt;&gt;= (\x -&gt; f x &gt;&gt;= g)</code>
+</li></ul></div>
+      </div><div class="content" id="slide-49">
+       <div class="container"><p>たとえばこんな例
+</p><pre><code class="prettyprint lang-haskell">double :: Num a =&gt; a -&gt; Maybe a
+double x = return $ x * 2
+
+square :: Num a =&gt; a -&gt; Maybe a
+square x = return $ x * x
+
+dec :: Num a =&gt; a -&gt; Maybe a
+dec x = return $ x - 1
+
+inc :: Num a =&gt; a -&gt; Maybe a
+inc x = return $ x + 1
+</code></pre><pre><code class="prettyprint lang-haskell">ghci&gt; return 1 &gt;&gt;= double &gt;&gt;= inc &gt;&gt;= square &gt;&gt;= dec
+Just 8
+</code></pre></div>
+      </div><div class="content" id="slide-50">
+       <div class="container"><p>括弧をつけると
+</p><pre><code class="prettyprint lang-haskell">ghci&gt; (((return 1 &gt;&gt;= double) &gt;&gt;= inc) &gt;&gt;= square) &gt;&gt;= dec
+Just 8
+</code></pre></div>
+      </div><div class="content" id="slide-51">
+       <div class="container"><p>だけど、こう書ける!
+</p><pre><code class="prettyprint lang-haskell">return 1 &gt;&gt;= (\a -&gt;
+double a &gt;&gt;= (\b -&gt;
+inc b &gt;&gt;= (\c -&gt;
+square c &gt;&gt;= (\d -&gt;
+dec d))))
+</code></pre><p>関数の入れ子の順序はどうでもよい。適用する関数の意味だけが重要。これをモナド結合法則という
+</p></div>
+      </div><div class="content" id="slide-52">
+       <div class="container"><h1 id="%E4%BB%98%E9%8C%B2">付録</h1></div>
+      </div><div class="content" id="slide-53">
+       <div class="container"><h2 id="Maybe%E3%81%AE%E6%8B%A1%E5%BC%B5%E7%89%88+Either">Maybeの拡張版 Either</h2></div>
+      </div><div class="content" id="slide-54">
+       <div class="container"><p>Maybeは失敗するかもしれない計算を含む文脈を表しているが、どんな失敗だったかはわからない。Eitherはエラーの内容がわかるようになっている。
+</p><pre><code class="prettyprint lang-haskell">data Either a b = Left a | Right b deriving (Eq, Ord, Read, Show)
+</code></pre></div>
+      </div><div class="content" id="slide-55">
+       <div class="container"><p>Left True は Either Bool bとなり、bが多相のまま。NothingにはMaybe aがつくのと同じ。Nothingではよくわからないので、エラーの型を指定できるようになっている。
+</p><pre><code class="prettyprint lang-haskell">ghci&gt; Right 20
+Right 20
+ghci&gt; Left &quot;w00t&quot;
+Left &quot;w00t&quot;
+ghci&gt; :t Right 'a'
+Right 'a' :: Either a Char
+ghci&gt; :t Left True
+Left True :: Either Bool b
+</code></pre></div>
+      </div><div class="content" id="slide-56">
+       <div class="container"><p>EitherはFunctorです
+</p><p>EitherではなくEither a型としているのが肝。Maybe a相当の型を表現している。
+</p><pre><code class="prettyprint lang-haskell">instance Functor (Either Int) where
+    fmap _ (Left x) = Left x
+    fmap f (Right x) = Right (f x)
+</code></pre><pre><code class="prettyprint lang-haskell">ghci&gt; fmap (== &quot;cheeseburger&quot;) (Left 1 :: Either Int String)
+Left 1
+ghci&gt; fmap (== &quot;cheeseburger&quot;) (Left 1 :: Either Int String)
+Right False
+</code></pre></div>
+      </div><div class="content" id="slide-57">
+       <div class="container"><p>EitherはMonadです
+</p><ul><li>Leftの値はError型であること
+</li><li>return はデフォルトの最小限の文脈を入れる関数
+</li><li>左辺がRightの場合はその中の値にfを適用する。
+</li><li>左辺がすでにエラーだった場合は引き継がれる。
+</li></ul><pre><code class="prettyprint lang-haskell">instance (Error e) -&gt; Monad (Either e) where
+    return x = Right x
+    Right x &gt;&gt;= f = f x
+    Left err &gt;&gt;= f = Left Error
+    fail msg = Left (strMsg msg)
+</code></pre></div>
+      </div><div class="content" id="slide-58">
+       <div class="container"><pre><code class="prettyprint lang-haskell">ghci&gt; Left &quot;boom&quot; &gt;&gt;= \x -&gt; return (x+1)
+Left &quot;boom&quot;
+ghci&gt; Left &quot;boom&quot; &gt;&gt;= \x -&gt; Left &quot;no way!&quot;
+Left &quot;boom&quot;
+ghci&gt; Right 100 &gt;&gt;= \x -&gt; Left &quot;no way!&quot;
+Left &quot;no way1&quot;
+</code></pre></div>
+      </div><div class="content" id="slide-59">
+       <div class="container"><h2 id="MonadPlus%E5%9E%8B%E3%82%AF%E3%83%A9%E3%82%B9">MonadPlus型クラス</h2><pre><code class="prettyprint lang-haskell">class Monad m =&gt; MonadPlus m where
+    mzero :: m a
+    mplus :: m a -&gt; m a -&gt; m a
+</code></pre></div>
+      </div><div class="content" id="slide-60">
+       <div class="container"><pre><code class="prettyprint lang-haskell">guard :: (MonadPlus m) =&gt; Bool -&gt; m ()
+guard True = return ()
+guard False = mzero
+</code></pre></div>
+      </div><div class="content" id="slide-61">
+       <div class="container"><pre><code class="prettyprint lang-haskell">test :: Maybe String
+test = if (5 &gt; 2) then Just &quot;cool&quot; else Nothing
+</code></pre></div>
+      </div><div class="content" id="slide-62">
+       <div class="container"><p>elseケースを書く必要がなくなる!
+</p><pre><code class="prettyprint lang-haskell">test :: Maybe String
+test = guard (5 &gt; 2) &gt;&gt; return &quot;cool&quot;
+</code></pre></div>
+      </div>
+          </div>
+        </div>
+        
+      </body>
+    </html>

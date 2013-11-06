@@ -1,0 +1,6 @@
+{
+  "title": "いまさらScalaでFizzBuzz",
+  "sections": [
+    "main"
+  ]
+}

@@ -1,0 +1,97 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+        <title>JVM GC 概説</title>
+        <link type="text/css" rel="stylesheet" href="assets/css/show.css" />
+        <link type="text/css" rel="stylesheet" href="assets/css/prettify.css" />
+        <script type="text/javascript" src="assets/js/jquery.min.js"></script>
+        <script type="text/javascript" src="assets/js/show.js"></script>
+        <script type="text/javascript" src="assets/js/prettify/prettify.js"></script>
+        <script type="text/javascript" src="assets/js/prettify/lang-apollo.js"></script><script type="text/javascript" src="assets/js/prettify/lang-css.js"></script><script type="text/javascript" src="assets/js/prettify/lang-hs.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lisp.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lua.js"></script><script type="text/javascript" src="assets/js/prettify/lang-ml.js"></script><script type="text/javascript" src="assets/js/prettify/lang-proto.js"></script><script type="text/javascript" src="assets/js/prettify/lang-scala.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vb.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vhdl.js"></script><script type="text/javascript" src="assets/js/prettify/lang-wiki.js"></script><script type="text/javascript" src="assets/js/prettify/lang-yaml.js"></script><link type="text/css" rel="stylesheet" href="css/custom.css?1355303800932" />
+      <script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+      </head>
+      <body>
+        <div id="slides">
+          <div id="reel">
+            <div class="content" id="slide-0">
+       <div class="container"><h1 id="Java+VM+GC+%E6%A6%82%E8%AA%AC">Java VM GC 概説</h1><p>@j5ik2o
+</p></div>
+      </div><div class="content" id="slide-1">
+       <div class="container"><p>Java VMのメモリ空間どうなっているのか
+</p></div>
+      </div><div class="content" id="slide-2">
+       <div class="container"><pre><code class="">+--------+--------+-------------------+
+|    New(Young)   |                   |
+|-----------------+                   |
+|  Eden  |Survivor|    Old(Tenured)   |
+|        +--------|                   |
+|        |From|To |                   |
++-----------------+-------------------+
+</code></pre></div>
+      </div><div class="content" id="slide-3">
+       <div class="container"><h2 id="%E3%83%92%E3%83%BC%E3%83%97%E9%A0%98%E5%9F%9F">ヒープ領域</h2><ul><li><p>New世代領域
+</p><pre><code>寿命が短いオブジェクトのための領域
+</code></pre></li><li><p>Old世代領域
+</p><pre><code>寿命が長いオブジェクトのための領域
+</code></pre></li></ul></div>
+      </div><div class="content" id="slide-4">
+       <div class="container"><h2 id="GC%E3%81%AE%E7%A8%AE%E9%A1%9E">GCの種類</h2><ul><li><p>マイナーGC
+</p><pre><code> New世代領域で起こるGC。
+</code></pre></li><li><p>メジャーGC
+</p><pre><code> Old世代領域で起こるGC。フルGCとも呼ばれる。
+</code></pre></li></ul></div>
+      </div><div class="content" id="slide-5">
+       <div class="container"><h2 id="New%E4%B8%96%E4%BB%A3%E9%A0%98%E5%9F%9F">New世代領域</h2><ul><li><p>Eden
+</p><pre><code>最初にアロケートされるところ
+</code></pre></li><li><p>Survivor
+</p><pre><code>マイナーGCの退避先
+</code></pre><ul><li>From
+</li><li>To
+</li></ul></li></ul></div>
+      </div><div class="content" id="slide-6">
+       <div class="container"><h2 id="%E3%83%9E%E3%82%A4%E3%83%8A%E3%83%BCGC">マイナーGC</h2><ul><li>コピーGCアルゴリズム
+</li><li>ライブオブジェクトをコピーし残った領域を解放する。
+</li></ul></div>
+      </div><div class="content" id="slide-7">
+       <div class="container"><h2 id="%E3%83%9E%E3%82%A4%E3%83%8A%E3%83%BCGC%E3%81%AE%E6%B5%81%E3%82%8C">マイナーGCの流れ</h2><ol><li>newするとEdenにアロケートする。
+</li><li>Edenが一杯になると、ライブオブジェクトだけをToにコピーする。
+</li><li>Edenの領域に残っているオブジェクトを破棄する。
+</li><li>ToとFromの名前を入れ替える。
+</li></ol></div>
+      </div><div class="content" id="slide-8">
+       <div class="container"><h2 id="1%E5%9B%9E%E7%9B%AEGC">1回目GC</h2><pre><code class=""> |  Eden  | From |  To |
+1| oxoxox |      |     |
+2| oxoxox |      | ooo |
+3|        |      | ooo |
+4|        | ooo  |     |
+</code></pre></div>
+      </div><div class="content" id="slide-9">
+       <div class="container"><h2 id="2%E5%9B%9E%E7%9B%AEGC">2回目GC</h2><pre><code class=""> |  Eden  |  From |  To   |
+1| oxxxox | ooo   |       |
+2| oxxxox | ooo   | oo    |
+3|        |       | ooooo |
+4|        | ooooo |       |
+</code></pre></div>
+      </div><div class="content" id="slide-10">
+       <div class="container"><h2 id="%E3%83%A1%E3%83%AA%E3%83%83%E3%83%88%E3%83%BB%E3%83%87%E3%83%A1%E3%83%AA%E3%83%83%E3%83%88">メリット・デメリット</h2><h3 id="%E3%83%A1%E3%83%AA%E3%83%83%E3%83%88">メリット</h3><ul><li>高速GC
+</li><li>高速にアロケートできる
+</li><li>フラグメントがない
+</li></ul><h3 id="%E3%83%87%E3%83%A1%E3%83%AA%E3%83%83%E3%83%88">デメリット</h3><ul><li>ヒープ領域の試用効率が悪い
+</li></ul></div>
+      </div><div class="content" id="slide-11">
+       <div class="container"><h2 id="%E3%83%A1%E3%82%B8%E3%83%A3%E3%83%BCGC">メジャーGC</h2><ul><li>Mark &amp; Sweep &amp; Compaction GC
+</li></ul><ol><li>ライブオブジェクトにマークをつける。
+</li><li>マークされていないオブジェクトを破棄する。
+</li><li>空き領域を詰める処理を行う。
+</li></ol><pre><code class="">1| vovov |
+2| v v v |
+3| vvv   |
+</code></pre></div>
+      </div>
+          </div>
+        </div>
+        
+      </body>
+    </html>

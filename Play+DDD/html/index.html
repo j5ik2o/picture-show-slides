@@ -1,0 +1,139 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+        <title>Scalaで作るMaybeモナド</title>
+        <link type="text/css" rel="stylesheet" href="assets/css/show.css" />
+        <link type="text/css" rel="stylesheet" href="assets/css/prettify.css" />
+        <script type="text/javascript" src="assets/js/jquery.min.js"></script>
+        <script type="text/javascript" src="assets/js/show.js"></script>
+        <script type="text/javascript" src="assets/js/prettify/prettify.js"></script>
+        <script type="text/javascript" src="assets/js/prettify/lang-apollo.js"></script><script type="text/javascript" src="assets/js/prettify/lang-css.js"></script><script type="text/javascript" src="assets/js/prettify/lang-hs.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lisp.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lua.js"></script><script type="text/javascript" src="assets/js/prettify/lang-ml.js"></script><script type="text/javascript" src="assets/js/prettify/lang-proto.js"></script><script type="text/javascript" src="assets/js/prettify/lang-scala.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vb.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vhdl.js"></script><script type="text/javascript" src="assets/js/prettify/lang-wiki.js"></script><script type="text/javascript" src="assets/js/prettify/lang-yaml.js"></script><link type="text/css" rel="stylesheet" href="css/custom.css?1354860468509" />
+      <script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+      </head>
+      <body>
+        <div id="slides">
+          <div id="reel">
+            <div class="content" id="slide-0">
+       <div class="container"><p>Scala + Play + DDD
+</p></div>
+      </div><div class="content" id="slide-1">
+       <div class="container"><p>APIサーバ作りました
+</p></div>
+      </div><div class="content" id="slide-2">
+       <div class="container"><ul><li>Scala 試してみよう
+</li><li>複雑なもの作るのでDDDでやろう
+</li></ul></div>
+      </div><div class="content" id="slide-3">
+       <div class="container"><ul><li>ngnix
+</li><li>play2
+</li><li>redis
+</li><li>mysql
+</li></ul></div>
+      </div><div class="content" id="slide-4">
+       <div class="container"><pre><code class="">app
+ +- controllers
+ +- views
+ +- domain
+ +- infrastructure
+</code></pre></div>
+      </div><div class="content" id="slide-5">
+       <div class="container"><p>ドメインの中身
+</p></div>
+      </div><div class="content" id="slide-6">
+       <div class="container"><p>Entity
+</p></div>
+      </div><div class="content" id="slide-7">
+       <div class="container"><pre><code class="prettyprint lang-scala">trait Entity[ID] {
+  val id: ID
+  def equals(obj : Any) = obj match {
+    case that: Entity[_] =&gt; id == that.id
+    case _ =&gt; false
+  }
+  def hashCode = 31 * id.##
+}
+</code></pre></div>
+      </div><div class="content" id="slide-8">
+       <div class="container"><pre><code class="prettyprint lang-scala">class User(val id: UUID, val name: String)
+  extends Entity[UUID]
+</code></pre></div>
+      </div><div class="content" id="slide-9">
+       <div class="container"><p>Repository
+</p><pre><code class="prettyprint lang-scala">trait Respository[Entity[ID], ID] {
+  def resolve(id: UUID): Entity[ID]
+  def store(entity: Entity[ID]): this.type
+}
+</code></pre><pre><code class="prettyprint lang-scala">trait EntityResolver[Entity[ID], ID]{
+  def resolve(id: UUID): Entity[ID]
+}
+</code></pre></div>
+      </div><div class="content" id="slide-10">
+       <div class="container"><pre><code class="prettyprint lang-scala">class UserRepository extends Repsotiory[User]{
+  def resolve(id: Identity[UUID]) = ...
+  def store(user: User) = ...
+}
+</code></pre></div>
+      </div><div class="content" id="slide-11">
+       <div class="container"><pre><code class="prettyprint lang-scala">abstract class OnRedisRepository[T &lt;: Entity[ID], ID, T2]
+(master: RedisConfig, slaveOption: Option[RedisConfig], expire: Int)
+(implicit redisFormat: RedisFormat[T, ID, T2])
+  extends Repository[T, ID] {
+
+  protected val masterRedisClientPool = Pool(master)
+
+  protected val slaveRedisClientPool = slaveOption.map(Pool(_)).getOrElse(masterRedisClientPool)
+
+  def resolve(identifier: Identity[ID]) =
+    resolveOption(identifier).getOrElse(throw new EntityNotFoundException)
+
+  def contains(entity: T) =
+    contains(entity.identity)
+
+  def delete(identity: Identity[ID]) {
+    masterRedisClientPool.withClient {
+      masterRedisClient =&gt;
+        masterRedisClient.del(redisFormat.toKey(identity))
+    }
+  }
+
+  def delete(entity: T) {
+    delete(entity.identity)
+  }
+</code></pre></div>
+      </div><div class="content" id="slide-12">
+       <div class="container"><p><code style="font-size: 50%">
+class CachedEntityResolveDecorator[E &lt;: Entity[ID], ID]
+(resolver: EntityResolver[E, ID],
+ cacheRepos: Repository[CacheableEntityContainer[E, ID], String])
+(implicit cm:ClassManifest[E])
+  extends EntityResolver[E, ID] with LoggingEx {
+</p><p>  def resolveOption(identifier: Identity[ID]) = {
+    // キャッシュから探す
+    val cacheKey = generateCacheKey(cm.erasure, identifier)
+    cacheRepos.resolveOption(cacheKey) match {
+      case Some(e) =&gt;
+        Some(e.entity)
+      case None =&gt;
+        // なければ、リゾルバから探す
+        resolver.resolveOption(identifier).map {
+          entity =&gt;
+          // あればキャッシュに格納
+            cacheRepos.store(new CacheableEntityContainer(entity, cacheKey))
+            entity
+        }
+    }
+  }
+</p><p>  def resolve(identifier: Identity[ID]) =
+    resolveOption(identifier).getOrElse(throw new EntityNotFoundException)
+</p><p>  def contains(identifier: Identity[ID]) = resolveOption(identifier).isDefined
+</p><p>  def contains(entity: E) = contains(entity.identity)
+}
+&lt;/div&gt;
+</p></div>
+      </div>
+          </div>
+        </div>
+        
+      </body>
+    </html>
