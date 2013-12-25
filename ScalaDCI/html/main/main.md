@@ -129,6 +129,14 @@ trait MoneySink {
 ```scala
 object TranferMoneySource extend MoneySource {
 
+  implicit def toOps(self: BankAccount) = new {
+
+    def receive(money: Money, from: BankAccount)
+               (implicit moneySink: MoneySink) =
+      moneySink.receive(self, money, from)
+
+  }
+
   def send(self: BankAccount, money: Money, to: BankAccount)
           (implicit moneySink: MoneySink): (BankAccount, BankAccount) = {
     val newFrom = self.decreaseBalance(money)
@@ -157,6 +165,7 @@ object TransferMoneySink extends MoneySink {
 ```scala
 case class TransferMoneyContext(from: BankAccount, to: BankAccount) {
 
+  // ロールを合成できるようにする
   implicit val source = TransferMoneySource
   implicit val sink = TransferMoneySink
 
@@ -166,9 +175,6 @@ case class TransferMoneyContext(from: BankAccount, to: BankAccount) {
             (implicit moneySource: MoneySource, moneySink: MoneySink) =
       moneySource.send(self, money, to)
 
-    def receive(money: Money, from: BankAccount)
-               (implicit moneySink: MoneySink) =
-      moneySink.receive(self, money, from)
   }
 
   def execute(money: Money): (BankAccount, BankAccount) =
@@ -183,11 +189,22 @@ case class TransferMoneyContext(from: BankAccount, to: BankAccount) {
 
 ```scala
 object Main extends App {
-  val to = BankAccount(Money(10, JPY))
-  val from = BankAccount(Money(0, JPY))
+  val from = BankAccount(Money(10, JPY))
+  val to = BankAccount(Money(0, JPY))
+
+  // BankAccount#sendと書くとコンパイルエラー
 
   val (newFrom, newTo) = TransferMoneyContext(from, to).execute(Money(10, JPY))
   println(newFrom, newTo)
+
+  // BankAccount#sendと書くとコンパイルエラー
 }
 ```
+
+!SLIDE
+
+## まとめ
+
+- DCIでは、メンタルモデルに忠実な表現が可能
+- Fatモデルとサービスを回避できる
 

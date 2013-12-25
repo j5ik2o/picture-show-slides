@@ -7,7 +7,7 @@
         <script type="text/javascript" src="assets/js/jquery.min.js"></script>
         <script type="text/javascript" src="assets/js/show.js"></script>
         <script type="text/javascript" src="assets/js/prettify/prettify.js"></script>
-        <script type="text/javascript" src="assets/js/prettify/lang-apollo.js"></script><script type="text/javascript" src="assets/js/prettify/lang-css.js"></script><script type="text/javascript" src="assets/js/prettify/lang-hs.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lisp.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lua.js"></script><script type="text/javascript" src="assets/js/prettify/lang-ml.js"></script><script type="text/javascript" src="assets/js/prettify/lang-proto.js"></script><script type="text/javascript" src="assets/js/prettify/lang-scala.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vb.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vhdl.js"></script><script type="text/javascript" src="assets/js/prettify/lang-wiki.js"></script><script type="text/javascript" src="assets/js/prettify/lang-yaml.js"></script><link type="text/css" rel="stylesheet" href="css/custom.css?1387930669990" />
+        <script type="text/javascript" src="assets/js/prettify/lang-apollo.js"></script><script type="text/javascript" src="assets/js/prettify/lang-css.js"></script><script type="text/javascript" src="assets/js/prettify/lang-hs.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lisp.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lua.js"></script><script type="text/javascript" src="assets/js/prettify/lang-ml.js"></script><script type="text/javascript" src="assets/js/prettify/lang-proto.js"></script><script type="text/javascript" src="assets/js/prettify/lang-scala.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vb.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vhdl.js"></script><script type="text/javascript" src="assets/js/prettify/lang-wiki.js"></script><script type="text/javascript" src="assets/js/prettify/lang-yaml.js"></script><link type="text/css" rel="stylesheet" href="css/custom.css?1387932141499" />
       <script type="text/javascript"><!--
         window.onload=function() { prettyPrint(); };
       --></script>
@@ -118,6 +118,14 @@ trait MoneySink {
                   <p>ロールの実装を定義する。
 </p><pre><code class="prettyprint lang-scala">object TranferMoneySource extend MoneySource {
 
+  implicit def toOps(self: BankAccount) = new {
+
+    def receive(money: Money, from: BankAccount)
+               (implicit moneySink: MoneySink) =
+      moneySink.receive(self, money, from)
+
+  }
+
   def send(self: BankAccount, money: Money, to: BankAccount)
           (implicit moneySink: MoneySink): (BankAccount, BankAccount) = {
     val newFrom = self.decreaseBalance(money)
@@ -142,6 +150,7 @@ object TransferMoneySink extends MoneySink {
       </div><div class="content" id="slide-10"><div class="container">
                   <h2 id="%E3%82%B3%E3%83%B3%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%82%92%E5%AE%9F%E8%A3%85%E3%81%99%E3%82%8B">コンテキストを実装する</h2><pre><code class="prettyprint lang-scala">case class TransferMoneyContext(from: BankAccount, to: BankAccount) {
 
+  // ロールを合成できるようにする
   implicit val source = TransferMoneySource
   implicit val sink = TransferMoneySink
 
@@ -151,9 +160,6 @@ object TransferMoneySink extends MoneySink {
             (implicit moneySource: MoneySource, moneySink: MoneySink) =
       moneySource.send(self, money, to)
 
-    def receive(money: Money, from: BankAccount)
-               (implicit moneySink: MoneySink) =
-      moneySink.receive(self, money, from)
   }
 
   def execute(money: Money): (BankAccount, BankAccount) =
@@ -164,13 +170,22 @@ object TransferMoneySink extends MoneySink {
                 </div>
       </div><div class="content" id="slide-11"><div class="container">
                   <h2 id="%E4%BD%BF%E3%81%84%E6%96%B9">使い方</h2><pre><code class="prettyprint lang-scala">object Main extends App {
-  val to = BankAccount(Money(10, JPY))
-  val from = BankAccount(Money(0, JPY))
+  val from = BankAccount(Money(10, JPY))
+  val to = BankAccount(Money(0, JPY))
+
+  // BankAccount#sendと書くとコンパイルエラー
 
   val (newFrom, newTo) = TransferMoneyContext(from, to).execute(Money(10, JPY))
   println(newFrom, newTo)
+
+  // BankAccount#sendと書くとコンパイルエラー
 }
 </code></pre>
+                </div>
+      </div><div class="content" id="slide-12"><div class="container">
+                  <h2 id="%E3%81%BE%E3%81%A8%E3%82%81">まとめ</h2><ul><li>DCIでは、メンタルモデルに忠実な表現が可能
+</li><li>Fatモデルとサービスを回避できる
+</li></ul>
                 </div>
       </div>
           </div>
