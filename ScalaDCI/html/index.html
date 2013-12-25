@@ -1,0 +1,180 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+        <title>-</title>
+        <link type="text/css" rel="stylesheet" href="assets/css/show.css" />
+        <link type="text/css" rel="stylesheet" href="assets/css/prettify.css" />
+        <script type="text/javascript" src="assets/js/jquery.min.js"></script>
+        <script type="text/javascript" src="assets/js/show.js"></script>
+        <script type="text/javascript" src="assets/js/prettify/prettify.js"></script>
+        <script type="text/javascript" src="assets/js/prettify/lang-apollo.js"></script><script type="text/javascript" src="assets/js/prettify/lang-css.js"></script><script type="text/javascript" src="assets/js/prettify/lang-hs.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lisp.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lua.js"></script><script type="text/javascript" src="assets/js/prettify/lang-ml.js"></script><script type="text/javascript" src="assets/js/prettify/lang-proto.js"></script><script type="text/javascript" src="assets/js/prettify/lang-scala.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vb.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vhdl.js"></script><script type="text/javascript" src="assets/js/prettify/lang-wiki.js"></script><script type="text/javascript" src="assets/js/prettify/lang-yaml.js"></script><link type="text/css" rel="stylesheet" href="css/custom.css?1387930669990" />
+      <script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+      </head>
+      <body>
+        <div id="slides">
+          <div id="reel">
+            <div class="content" id="slide-0"><div class="container">
+                  <h1 id="DCI%E5%85%A5%E9%96%80">DCI入門</h1>
+                </div>
+      </div><div class="content" id="slide-1"><div class="container">
+                  <h2 id="DCI%E3%81%A8%E3%81%AF">DCIとは</h2><ul><li>Data  
+モデル
+</li><li>Context  
+モデルを使う場面
+</li><li>Interaction  
+振る舞い
+</li></ul>
+                </div>
+      </div><div class="content" id="slide-2"><div class="container">
+                  <h2 id="DCI%E3%81%AE%E7%9D%80%E7%9C%BC%E7%82%B9">DCIの着眼点</h2><ul><li>ユーザのメンタルモデルに近づくこと
+</li><li>モデルにはコンテキストに関連する振る舞いと、そうでないものがある
+</li></ul>
+                </div>
+      </div><div class="content" id="slide-3"><div class="container">
+                  <h2 id="%E5%8F%A3%E5%BA%A7%E9%96%93%E9%80%81%E9%87%91%E3%81%AE%E4%BE%8B%E3%81%A7%E8%80%83%E3%81%88%E3%82%8B">口座間送金の例で考える</h2><pre><code class="prettyprint lang-scala">case class BankAccount(balance: Money) {
+
+  def increaseBalance(money: Money): BankAccount = {
+    BankAccount(balance + money)
+  }
+
+  def decreaseBalance(money: Money): BankAccount = {
+    require(money &gt; Money.Zero)
+    BankAccount(balance - money)
+  }
+
+  def updateLog(message: String, from: BankAccount, to: BankAccount, money: Money) = {
+    val date = new Date
+    println(s&quot;date = $date, from = $from, to = $to, money = $money&quot;) 
+  }
+
+}
+</code></pre>
+                </div>
+      </div><div class="content" id="slide-4"><div class="container">
+                  <h2 id="BankAccount%23send">BankAccount#send</h2><pre><code class="prettyprint lang-scala">case class BankAccount(balance: Money) {
+
+  def increaseBalance(money: Money): BankAccount = /* ... */
+
+  def decreaseBalance(money: Money): BankAccount = /* ... */
+
+  def updateLog(message: String, from: BankAccount, to: BankAccount, money: Money): Unit = /* ... */
+
+  def send(money: Money, to: BankAccount): (BankAccount, BankAccoun) = {
+    val newFrom = decreaseBalance(money)
+    val newTo = to.receive(money, newThis)
+    updateLog(&quot;send&quot;, newFrom, newTo, money)
+    (newFrom, newTo)
+  }
+
+  def receive(money: Money, from: BankAccount): BankAccount = {
+    val newTo = increaseBalance(money)
+    updateLog(&quot;receive&quot;, from, newTo, money)
+    newTo
+  }
+
+}
+</code></pre>
+                </div>
+      </div><div class="content" id="slide-5"><div class="container">
+                  <h2 id="TransferService%23transfer">TransferService#transfer</h2><pre><code class="prettyprint lang-scala">object TransferServie {
+
+  def transfer(money: Money, from: BankAccount, to: BankAccount): (BankAccount BankAccount) = {
+    val newFrom = from.decreaseBalance(money)
+    val newTo = to.increaseBalance(money)
+    updateLog(&quot;tranfer&quot;, newFrom, newTo, money)
+    (newFrom, newTo)
+  }
+
+}
+</code></pre>
+                </div>
+      </div><div class="content" id="slide-6"><div class="container">
+                  <h2 id="%E5%95%8F%E9%A1%8C">問題</h2><ul><li>BankAccount#(send|receive)は、モデルがFatになる。本当にその振る舞いがあることが適切か？
+</li><li>TransferService#tranferは、オブジェクトではなく手続き。乱用するとモデルの表現が失われていく。
+</li></ul>
+                </div>
+      </div><div class="content" id="slide-7"><div class="container">
+                  <h2 id="DCI%E3%81%A7%E8%A7%A3%E6%B1%BA%E3%81%97%E3%81%A6%E3%81%BF%E3%82%8B">DCIで解決してみる</h2>
+                </div>
+      </div><div class="content" id="slide-8"><div class="container">
+                  <h2 id="send%E3%81%A8receive%E3%82%92%E3%83%AD%E3%83%BC%E3%83%AB%E3%81%AB%E5%89%B2%E3%82%8A%E5%BD%93%E3%81%A6%E3%82%8B">sendとreceiveをロールに割り当てる</h2><p>まずロールのインターフェイスを定める。
+</p><pre><code class="prettyprint lang-scala">trait MoneySource {
+
+  def send(self: BankAccount, money: Money, to: BankAccount)
+          (implicit moneySink: MoneySink): (BankAccount, BankAccount)
+
+}
+
+trait MoneySink {
+
+  def receive(self: BankAccount, money: Money, from: BankAccount): BankAccount
+
+}
+</code></pre>
+                </div>
+      </div><div class="content" id="slide-9"><div class="container">
+                  <p>ロールの実装を定義する。
+</p><pre><code class="prettyprint lang-scala">object TranferMoneySource extend MoneySource {
+
+  def send(self: BankAccount, money: Money, to: BankAccount)
+          (implicit moneySink: MoneySink): (BankAccount, BankAccount) = {
+    val newFrom = self.decreaseBalance(money)
+    val newTo = to.receive(money)
+    newTo.updateLog(&quot;send&quot;, newFrom, newTo, money)
+    (newFrom, newTo)
+  }
+
+}
+
+object TransferMoneySink extends MoneySink {
+
+  def receive(self: BankAccount, money: Money, from: BankAccount): BankAccount = {
+    val newTo = self.increaseBalance(money)
+    newTo.updateLog(&quot;receive&quot;, from, newTo, money)
+    newTo
+  }
+
+}
+</code></pre>
+                </div>
+      </div><div class="content" id="slide-10"><div class="container">
+                  <h2 id="%E3%82%B3%E3%83%B3%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%82%92%E5%AE%9F%E8%A3%85%E3%81%99%E3%82%8B">コンテキストを実装する</h2><pre><code class="prettyprint lang-scala">case class TransferMoneyContext(from: BankAccount, to: BankAccount) {
+
+  implicit val source = TransferMoneySource
+  implicit val sink = TransferMoneySink
+
+  implicit def toOps(self: BankAccount) = new {
+
+    def send(money: Money, to: BankAccount)
+            (implicit moneySource: MoneySource, moneySink: MoneySink) =
+      moneySource.send(self, money, to)
+
+    def receive(money: Money, from: BankAccount)
+               (implicit moneySink: MoneySink) =
+      moneySink.receive(self, money, from)
+  }
+
+  def execute(money: Money): (BankAccount, BankAccount) =
+    from.send(money, to)
+
+}
+</code></pre>
+                </div>
+      </div><div class="content" id="slide-11"><div class="container">
+                  <h2 id="%E4%BD%BF%E3%81%84%E6%96%B9">使い方</h2><pre><code class="prettyprint lang-scala">object Main extends App {
+  val to = BankAccount(Money(10, JPY))
+  val from = BankAccount(Money(0, JPY))
+
+  val (newFrom, newTo) = TransferMoneyContext(from, to).execute(Money(10, JPY))
+  println(newFrom, newTo)
+}
+</code></pre>
+                </div>
+      </div>
+          </div>
+        </div>
+        
+      </body>
+    </html>

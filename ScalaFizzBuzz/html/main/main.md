@@ -8,10 +8,8 @@
 
 普段なにやっているか
 
-* ニコルソンのリーダ, Asterisk制御鯖とかをJava+concurrentを使って作った。
-* ニコニコスマフォのAPI鯖をPlay2+Scala+DDDで書いてた
-* LINEもどきのサーバをFinagle+Redisで作った
 * PHPをJVMで動作させる検証。不毛ですorz
+* ニコニコのスマフォ用API鯖をPlay2+Scala+DDDで書いてた
 
 !SLIDE
 

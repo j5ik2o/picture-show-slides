@@ -1,13 +1,13 @@
 <html>
       <head>
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-        <title>Scalaで作るMaybeモナド</title>
+        <title>いまさらScalaでFizzBuzz</title>
         <link type="text/css" rel="stylesheet" href="assets/css/show.css" />
         <link type="text/css" rel="stylesheet" href="assets/css/prettify.css" />
         <script type="text/javascript" src="assets/js/jquery.min.js"></script>
         <script type="text/javascript" src="assets/js/show.js"></script>
         <script type="text/javascript" src="assets/js/prettify/prettify.js"></script>
-        <script type="text/javascript" src="assets/js/prettify/lang-apollo.js"></script><script type="text/javascript" src="assets/js/prettify/lang-css.js"></script><script type="text/javascript" src="assets/js/prettify/lang-hs.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lisp.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lua.js"></script><script type="text/javascript" src="assets/js/prettify/lang-ml.js"></script><script type="text/javascript" src="assets/js/prettify/lang-proto.js"></script><script type="text/javascript" src="assets/js/prettify/lang-scala.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vb.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vhdl.js"></script><script type="text/javascript" src="assets/js/prettify/lang-wiki.js"></script><script type="text/javascript" src="assets/js/prettify/lang-yaml.js"></script><link type="text/css" rel="stylesheet" href="css/custom.css?1354796003219" />
+        <script type="text/javascript" src="assets/js/prettify/lang-apollo.js"></script><script type="text/javascript" src="assets/js/prettify/lang-css.js"></script><script type="text/javascript" src="assets/js/prettify/lang-hs.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lisp.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lua.js"></script><script type="text/javascript" src="assets/js/prettify/lang-ml.js"></script><script type="text/javascript" src="assets/js/prettify/lang-proto.js"></script><script type="text/javascript" src="assets/js/prettify/lang-scala.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vb.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vhdl.js"></script><script type="text/javascript" src="assets/js/prettify/lang-wiki.js"></script><script type="text/javascript" src="assets/js/prettify/lang-yaml.js"></script><link type="text/css" rel="stylesheet" href="css/custom.css?1383716342381" />
       <script type="text/javascript"><!--
         window.onload=function() { prettyPrint(); };
       --></script>
@@ -15,19 +15,19 @@
       <body>
         <div id="slides">
           <div id="reel">
-            <div class="content" id="slide-0">
-       <div class="container"><p>いまさらScalaのFizzBuzz
+            <div class="content" id="slide-0"><div class="container">
+                  <p>いまさらScalaのFizzBuzz
 </p><p>@j5ik2o
-</p></div>
-      </div><div class="content" id="slide-1">
-       <div class="container"><p>普段なにやっているか
-</p><ul><li>ニコルソンのリーダ, Asterisk制御鯖とかをJava+concurrentを使って作った。
-</li><li>ニコニコスマフォのAPI鯖をPlay2+Scala+DDDで書いてた
-</li><li>LINEもどきのサーバをFinagle+Redisで作った
-</li><li>PHPをJVMで動作させる検証。不毛ですorz
-</li></ul></div>
-      </div><div class="content" id="slide-2">
-       <div class="container"><p>命令型で記述。
+</p>
+                </div>
+      </div><div class="content" id="slide-1"><div class="container">
+                  <p>普段なにやっているか
+</p><ul><li>PHPをJVMで動作させる検証。不毛ですorz
+</li><li>ニコニコのスマフォ用API鯖をPlay2+Scala+DDDで書いてた
+</li></ul>
+                </div>
+      </div><div class="content" id="slide-2"><div class="container">
+                  <p>命令型で記述。
 </p><pre><code class="prettyprint lang-scala">for (n &lt;- 1 to 100) {
   if (n % 15 == 0) {
     println(&quot;FizzBuzz&quot;)
@@ -39,55 +39,63 @@
     println(n)
   }
 }
-</code></pre></div>
-      </div><div class="content" id="slide-3">
-       <div class="container"><p>関数型で記述。その前に
+</code></pre>
+                </div>
+      </div><div class="content" id="slide-3"><div class="container">
+                  <p>関数型で記述。その前に
 </p><pre><code class="prettyprint lang-scala">scala&gt; 1.to(100)
 res0: scala.collection.immutable.Range.Inclusive = Range(1, ..., 100)
 scala&gt; res0.map({v :Int =&gt; v * 2})
 res1: scala.collection.immutable.IndexedSeq[Int] = Vector(2, ..., 200)
-</code></pre></div>
-      </div><div class="content" id="slide-4">
-       <div class="container"><pre><code class="prettyprint lang-scala"> val f = {n:Int =&gt; n.toString}
+</code></pre>
+                </div>
+      </div><div class="content" id="slide-4"><div class="container">
+                  <pre><code class="prettyprint lang-scala"> val f = {n:Int =&gt; n.toString}
  /*
  val f = new Function1[Int,String]{
    def apply(arg:Int):String = arg.toString
  }
 */
  (1 to 100).map(f)
-</code></pre></div>
-      </div><div class="content" id="slide-5">
-       <div class="container"><pre><code class="prettyprint lang-scala">res0.map{v :Int =&gt; v * 2}
+</code></pre>
+                </div>
+      </div><div class="content" id="slide-5"><div class="container">
+                  <pre><code class="prettyprint lang-scala">res0.map{v :Int =&gt; v * 2}
 res0.map{v =&gt; v * 2}
 res0.map{_ * 2}
 res0.map(_ * 2)
-</code></pre></div>
-      </div><div class="content" id="slide-6">
-       <div class="container"><p>関数型で記述。
+</code></pre>
+                </div>
+      </div><div class="content" id="slide-6"><div class="container">
+                  <p>関数型で記述。
 </p><pre><code class="prettyprint lang-scala">(1 to 100).map({
   case n if n % 15 == 0 =&gt; &quot;FizzBuzz&quot;
   case n if n % 3 == 0 =&gt; &quot;Fizz&quot;
   case n if n % 5 == 0 =&gt; &quot;Buzz&quot;
   case n =&gt; n
 }).foreach(println)
-</code></pre></div>
-      </div><div class="content" id="slide-7">
-       <div class="container"><p>他の書き方
+</code></pre>
+                </div>
+      </div><div class="content" id="slide-7"><div class="container">
+                  <p>他の書き方
 </p><pre><code class="prettyprint lang-scala"> (1 to 100).map {
    n =&gt; if (n % 15 == 0) &quot;FizzBuzz&quot;
      else if (n % 3 == 0) &quot;Fizz&quot;
        else if (n % 5 == 0) &quot;Buzz&quot;
          else n
 }.foreach(println)
-</code></pre></div>
-      </div><div class="content" id="slide-8">
-       <div class="container"><pre><code class="prettyprint lang-scala">(1 to 100).map {
+</code></pre>
+                </div>
+      </div><div class="content" id="slide-8"><div class="container">
+                  <p><code>`scala
+(1 to 100).map {
   case n =&gt; if (n % 15 == 0) &quot;FizzBuzz&quot;
     else if (n % 3 == 0) =&gt; &quot;Fizz&quot;
       else if (n % 5 == 0) =&gt; &quot;Buzz&quot;
         else n
 }.foreach(println)
-</code></pre></div>
+</code>`</p>
+                </div>
       </div>
           </div>
         </div>
