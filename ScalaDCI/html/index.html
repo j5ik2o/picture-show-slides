@@ -1,13 +1,13 @@
 <html>
       <head>
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-        <title>-</title>
+        <title>サルにわからないDCI入門</title>
         <link type="text/css" rel="stylesheet" href="assets/css/show.css" />
         <link type="text/css" rel="stylesheet" href="assets/css/prettify.css" />
         <script type="text/javascript" src="assets/js/jquery.min.js"></script>
         <script type="text/javascript" src="assets/js/show.js"></script>
         <script type="text/javascript" src="assets/js/prettify/prettify.js"></script>
-        <script type="text/javascript" src="assets/js/prettify/lang-apollo.js"></script><script type="text/javascript" src="assets/js/prettify/lang-css.js"></script><script type="text/javascript" src="assets/js/prettify/lang-hs.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lisp.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lua.js"></script><script type="text/javascript" src="assets/js/prettify/lang-ml.js"></script><script type="text/javascript" src="assets/js/prettify/lang-proto.js"></script><script type="text/javascript" src="assets/js/prettify/lang-scala.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vb.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vhdl.js"></script><script type="text/javascript" src="assets/js/prettify/lang-wiki.js"></script><script type="text/javascript" src="assets/js/prettify/lang-yaml.js"></script><link type="text/css" rel="stylesheet" href="css/custom.css?1387932141499" />
+        <script type="text/javascript" src="assets/js/prettify/lang-apollo.js"></script><script type="text/javascript" src="assets/js/prettify/lang-css.js"></script><script type="text/javascript" src="assets/js/prettify/lang-hs.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lisp.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lua.js"></script><script type="text/javascript" src="assets/js/prettify/lang-ml.js"></script><script type="text/javascript" src="assets/js/prettify/lang-proto.js"></script><script type="text/javascript" src="assets/js/prettify/lang-scala.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vb.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vhdl.js"></script><script type="text/javascript" src="assets/js/prettify/lang-wiki.js"></script><script type="text/javascript" src="assets/js/prettify/lang-yaml.js"></script><link type="text/css" rel="stylesheet" href="css/custom.css?1387941235993" />
       <script type="text/javascript"><!--
         window.onload=function() { prettyPrint(); };
       --></script>
@@ -16,7 +16,9 @@
         <div id="slides">
           <div id="reel">
             <div class="content" id="slide-0"><div class="container">
-                  <h1 id="DCI%E5%85%A5%E9%96%80">DCI入門</h1>
+                  <h1 id="%E3%82%B5%E3%83%AB%E3%81%AB%E3%81%AF%E3%82%8F%E3%81%8B%E3%82%89%E3%81%AA%E3%81%84DCI%E5%85%A5%E9%96%80">サルにはわからないDCI入門</h1><p>@j5ik2o
+</p><p>2013-12-25
+</p>
                 </div>
       </div><div class="content" id="slide-1"><div class="container">
                   <h2 id="DCI%E3%81%A8%E3%81%AF">DCIとは</h2><ul><li>Data  
@@ -28,23 +30,27 @@
 </li></ul>
                 </div>
       </div><div class="content" id="slide-2"><div class="container">
-                  <h2 id="DCI%E3%81%AE%E7%9D%80%E7%9C%BC%E7%82%B9">DCIの着眼点</h2><ul><li>ユーザのメンタルモデルに近づくこと
+                  <h2 id="DCI%E3%81%AE%E7%9D%80%E7%9C%BC%E7%82%B9">DCIの着眼点</h2><p><a  href="http://d.hatena.ne.jp/digitalsoul/20100131/1264925022">DCIアーキテクチャ - Trygve Reenskaug and James O. Coplien</a>
+</p><ul><li>ユーザのメンタルモデルに近づくこと(オブジェクト指向の目的そのもの)
 </li><li>モデルにはコンテキストに関連する振る舞いと、そうでないものがある
 </li></ul>
                 </div>
       </div><div class="content" id="slide-3"><div class="container">
                   <h2 id="%E5%8F%A3%E5%BA%A7%E9%96%93%E9%80%81%E9%87%91%E3%81%AE%E4%BE%8B%E3%81%A7%E8%80%83%E3%81%88%E3%82%8B">口座間送金の例で考える</h2><pre><code class="prettyprint lang-scala">case class BankAccount(balance: Money) {
-
+  // 入金
   def increaseBalance(money: Money): BankAccount = {
     BankAccount(balance + money)
   }
-
+  // 出金
   def decreaseBalance(money: Money): BankAccount = {
     require(money &gt; Money.Zero)
     BankAccount(balance - money)
   }
-
-  def updateLog(message: String, from: BankAccount, to: BankAccount, money: Money) = {
+  // ログ
+  def updateLog(message: String,
+                from: BankAccount,
+                to: BankAccount,
+                money: Money) = {
     val date = new Date
     println(s&quot;date = $date, from = $from, to = $to, money = $money&quot;) 
   }
@@ -59,7 +65,9 @@
 
   def decreaseBalance(money: Money): BankAccount = /* ... */
 
-  def updateLog(message: String, from: BankAccount, to: BankAccount, money: Money): Unit = /* ... */
+  def updateLog(message: String,
+                from: BankAccount,
+                to: BankAccount, money: Money): Unit = /* ... */
 
   def send(money: Money, to: BankAccount): (BankAccount, BankAccoun) = {
     val newFrom = decreaseBalance(money)
@@ -80,7 +88,9 @@
       </div><div class="content" id="slide-5"><div class="container">
                   <h2 id="TransferService%23transfer">TransferService#transfer</h2><pre><code class="prettyprint lang-scala">object TransferServie {
 
-  def transfer(money: Money, from: BankAccount, to: BankAccount): (BankAccount BankAccount) = {
+  def transfer(money: Money,
+               from: BankAccount,
+               to: BankAccount): (BankAccount BankAccount) = {
     val newFrom = from.decreaseBalance(money)
     val newTo = to.increaseBalance(money)
     updateLog(&quot;tranfer&quot;, newFrom, newTo, money)
@@ -99,24 +109,36 @@
                   <h2 id="DCI%E3%81%A7%E8%A7%A3%E6%B1%BA%E3%81%97%E3%81%A6%E3%81%BF%E3%82%8B">DCIで解決してみる</h2>
                 </div>
       </div><div class="content" id="slide-8"><div class="container">
-                  <h2 id="send%E3%81%A8receive%E3%82%92%E3%83%AD%E3%83%BC%E3%83%AB%E3%81%AB%E5%89%B2%E3%82%8A%E5%BD%93%E3%81%A6%E3%82%8B">sendとreceiveをロールに割り当てる</h2><p>まずロールのインターフェイスを定める。
-</p><pre><code class="prettyprint lang-scala">trait MoneySource {
+                  <h3 id="Scala%E3%81%A7%E3%81%AE%E5%AE%9F%E7%8F%BE%E6%96%B9%E6%B3%95%E3%81%84%E3%82%8D%E3%81%84%E3%82%8D">Scalaでの実現方法いろいろ</h3><ul><li>traitを使ったミックスイン
+</li></ul><pre><code class="prettyprint lang-scala">val bankAccount1 = new BankAccount(Money(10, JPY)) with Sender
+val bankAccount2 = new BankAccount(Money(10, JPY)) with Receiver
+</code></pre><ul><li>implicit conversion
+</li><li><p>implicit parameter
+</p><ul><li>型クラス
+</li></ul></li></ul>
+                </div>
+      </div><div class="content" id="slide-9"><div class="container">
+                  <h3 id="Role%E3%81%AEI%2FF%28Methodless+Role%29%E3%82%92%E5%AE%9A%E7%BE%A9%E3%81%99%E3%82%8B">RoleのI/F(Methodless Role)を定義する</h3><pre><code class="prettyprint lang-scala">// 送金元
+trait MoneySource {
 
   def send(self: BankAccount, money: Money, to: BankAccount)
           (implicit moneySink: MoneySink): (BankAccount, BankAccount)
 
 }
 
+// 送金先
 trait MoneySink {
 
-  def receive(self: BankAccount, money: Money, from: BankAccount): BankAccount
+  def receive(self: BankAccount,
+              money: Money,
+              from: BankAccount): BankAccount
 
 }
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-9"><div class="container">
-                  <p>ロールの実装を定義する。
-</p><pre><code class="prettyprint lang-scala">object TranferMoneySource extend MoneySource {
+      </div><div class="content" id="slide-10"><div class="container">
+                  <h3 id="%E3%83%AD%E3%83%BC%E3%83%AB%E3%81%AE%E5%AE%9F%E8%A3%85%28Mehtodful+Role%29%E3%82%92%E5%AE%9A%E7%BE%A9%E3%81%99%E3%82%8B">ロールの実装(Mehtodful Role)を定義する</h3><pre><code class="prettyprint lang-scala">// 送金元
+object TranferMoneySource extend MoneySource {
 
   implicit def toOps(self: BankAccount) = new {
 
@@ -135,7 +157,10 @@ trait MoneySink {
   }
 
 }
-
+</code></pre>
+                </div>
+      </div><div class="content" id="slide-11"><div class="container">
+                  <pre><code class="prettyprint lang-scala">// 送金先
 object TransferMoneySink extends MoneySink {
 
   def receive(self: BankAccount, money: Money, from: BankAccount): BankAccount = {
@@ -147,8 +172,9 @@ object TransferMoneySink extends MoneySink {
 }
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-10"><div class="container">
-                  <h2 id="%E3%82%B3%E3%83%B3%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%82%92%E5%AE%9F%E8%A3%85%E3%81%99%E3%82%8B">コンテキストを実装する</h2><pre><code class="prettyprint lang-scala">case class TransferMoneyContext(from: BankAccount, to: BankAccount) {
+      </div><div class="content" id="slide-12"><div class="container">
+                  <h3 id="%E3%82%B3%E3%83%B3%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%82%92%E5%AE%9F%E8%A3%85%E3%81%99%E3%82%8B">コンテキストを実装する</h3><pre><code class="prettyprint lang-scala">// 送金コンテキスト
+case class TransferMoneyContext(from: BankAccount, to: BankAccount) {
 
   // ロールを合成できるようにする
   implicit val source = TransferMoneySource
@@ -168,21 +194,100 @@ object TransferMoneySink extends MoneySink {
 }
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-11"><div class="container">
-                  <h2 id="%E4%BD%BF%E3%81%84%E6%96%B9">使い方</h2><pre><code class="prettyprint lang-scala">object Main extends App {
+      </div><div class="content" id="slide-13"><div class="container">
+                  <h3 id="%E4%BD%BF%E3%81%84%E6%96%B9">使い方</h3><pre><code class="prettyprint lang-scala">object Main extends App {
   val from = BankAccount(Money(10, JPY))
   val to = BankAccount(Money(0, JPY))
 
   // BankAccount#sendと書くとコンパイルエラー
 
-  val (newFrom, newTo) = TransferMoneyContext(from, to).execute(Money(10, JPY))
+  val context = TransferMoneyContext(from, to)
+  // 送金の実行　
+  val (newFrom, newTo) = context.execute(Money(10, JPY))
   println(newFrom, newTo)
 
   // BankAccount#sendと書くとコンパイルエラー
 }
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-12"><div class="container">
+      </div><div class="content" id="slide-14"><div class="container">
+                  <h2 id="Role%E3%82%92%E5%9E%8B%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E5%AE%9F%E8%A3%85%E3%81%99%E3%82%8B">Roleを型クラスを使って実装する</h2>
+                </div>
+      </div><div class="content" id="slide-15"><div class="container">
+                  <p>ECサイトの商品購入について
+</p><pre><code class="prettyprint lang-scala">// Data
+trait User extends Entity[UserId] {
+  // ...
+}
+
+// Data
+trait Group extends Entity[GroupId] {
+  // ...
+}
+</code></pre>
+                </div>
+      </div><div class="content" id="slide-16"><div class="container">
+                  <h3 id="Methodless+Role">Methodless Role</h3><pre><code class="prettyprint lang-scala">// Methodless Role
+trait Purchaser[A] {
+
+  def purchase(self: A, product: Product): A
+
+}
+</code></pre>
+                </div>
+      </div><div class="content" id="slide-17"><div class="container">
+                  <h3 id="Methodful+Role">Methodful Role</h3><pre><code class="prettyprint lang-scala">// Methodful Role
+object UserPurchaser extends Purchaser[User] {
+
+  def purchase(self: User, product: Product): User = {
+    // ...
+  }
+
+}
+
+// Methodful Role
+object GroupPurchaser extends Purchaser[Group] {
+
+  def purchase(self: Group, product: Product): Group = {
+    // ...
+  }
+
+}
+</code></pre>
+                </div>
+      </div><div class="content" id="slide-18"><div class="container">
+                  <h3 id="Context">Context</h3><p>異なる型であるが同じインターフェイスで操作できる(アドホック多相)
+</p><pre><code class="prettyprint lang-scala">// Context
+case class ProductPurchaseContext() {
+  implicit val up = UserPurchaser
+  implicit val gp = GroupPurchaser
+
+  implicit def toPurchaserOps[A](self: A)
+    (implicit purchaser: Purchaser[A]) =
+      new {
+       def purchase(product: Product): A =
+               purchaser.purchase(self, product)
+      }
+
+  def execute(user: User, product: Product) =
+    user.purchase(product) // ここ
+
+  def execute(group: Group, product: Product) =
+    group.purchase(product) // ここ
+ 
+}
+</code></pre>
+                </div>
+      </div><div class="content" id="slide-19"><div class="container">
+                  <h3 id="Main">Main</h3><pre><code class="prettyprint lang-scala">object Main extends App {
+// ...
+ProductPurchaseContext().execute(User(&quot;Junichi&quot;,&quot;Kato&quot;), Product(ProductType.MacPro))
+ProductPurchaseContext().execute(Group(&quot;Capsule Corp&quot;), Product(ProductType.MacPro))
+// ...
+}
+</code></pre>
+                </div>
+      </div><div class="content" id="slide-20"><div class="container">
                   <h2 id="%E3%81%BE%E3%81%A8%E3%82%81">まとめ</h2><ul><li>DCIでは、メンタルモデルに忠実な表現が可能
 </li><li>Fatモデルとサービスを回避できる
 </li></ul>

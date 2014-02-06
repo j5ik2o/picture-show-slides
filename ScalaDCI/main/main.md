@@ -2,6 +2,10 @@
 
 # サルにはわからないDCI入門
 
+@j5ik2o
+
+2013-12-25
+
 !SLIDE
 
 ## DCIとは
@@ -17,7 +21,9 @@
 
 ## DCIの着眼点
 
-- ユーザのメンタルモデルに近づくこと
+[DCIアーキテクチャ - Trygve Reenskaug and James O. Coplien](http://d.hatena.ne.jp/digitalsoul/20100131/1264925022)
+
+- ユーザのメンタルモデルに近づくこと(オブジェクト指向の目的そのもの)
 - モデルにはコンテキストに関連する振る舞いと、そうでないものがある
 
 !SLIDE
@@ -26,17 +32,20 @@
 
 ```scala
 case class BankAccount(balance: Money) {
-
+  // 入金
   def increaseBalance(money: Money): BankAccount = {
     BankAccount(balance + money)
   }
-
+  // 出金
   def decreaseBalance(money: Money): BankAccount = {
     require(money > Money.Zero)
     BankAccount(balance - money)
   }
-
-  def updateLog(message: String, from: BankAccount, to: BankAccount, money: Money) = {
+  // ログ
+  def updateLog(message: String,
+                from: BankAccount,
+                to: BankAccount,
+                money: Money) = {
     val date = new Date
     println(s"date = $date, from = $from, to = $to, money = $money") 
   }
@@ -55,7 +64,9 @@ case class BankAccount(balance: Money) {
 
   def decreaseBalance(money: Money): BankAccount = /* ... */
 
-  def updateLog(message: String, from: BankAccount, to: BankAccount, money: Money): Unit = /* ... */
+  def updateLog(message: String,
+                from: BankAccount,
+                to: BankAccount, money: Money): Unit = /* ... */
 
   def send(money: Money, to: BankAccount): (BankAccount, BankAccoun) = {
     val newFrom = decreaseBalance(money)
@@ -80,7 +91,9 @@ case class BankAccount(balance: Money) {
 ```scala
 object TransferServie {
 
-  def transfer(money: Money, from: BankAccount, to: BankAccount): (BankAccount BankAccount) = {
+  def transfer(money: Money,
+               from: BankAccount,
+               to: BankAccount): (BankAccount BankAccount) = {
     val newFrom = from.decreaseBalance(money)
     val newTo = to.increaseBalance(money)
     updateLog("tranfer", newFrom, newTo, money)
@@ -103,11 +116,26 @@ object TransferServie {
 
 !SLIDE
 
-## sendとreceiveをロールに割り当てる
+### Scalaでの実現方法いろいろ
 
-まずロールのインターフェイスを定める。
+- traitを使ったミックスイン
 
 ```scala
+val bankAccount1 = new BankAccount(Money(10, JPY)) with Sender
+val bankAccount2 = new BankAccount(Money(10, JPY)) with Receiver
+```
+
+- implicit conversion
+- implicit parameter
+    - 型クラス
+
+
+!SLIDE
+
+### RoleのI/F(Methodless Role)を定義する
+
+```scala
+// 送金元
 trait MoneySource {
 
   def send(self: BankAccount, money: Money, to: BankAccount)
@@ -115,18 +143,22 @@ trait MoneySource {
 
 }
 
+// 送金先
 trait MoneySink {
 
-  def receive(self: BankAccount, money: Money, from: BankAccount): BankAccount
+  def receive(self: BankAccount,
+              money: Money,
+              from: BankAccount): BankAccount
 
 }
 ```
 
 !SLIDE
 
-ロールの実装を定義する。
+### ロールの実装(Mehtodful Role)を定義する
 
 ```scala
+// 送金元
 object TranferMoneySource extend MoneySource {
 
   implicit def toOps(self: BankAccount) = new {
@@ -146,7 +178,12 @@ object TranferMoneySource extend MoneySource {
   }
 
 }
+```
 
+!SLIDE
+
+```scala
+// 送金先
 object TransferMoneySink extends MoneySink {
 
   def receive(self: BankAccount, money: Money, from: BankAccount): BankAccount = {
@@ -160,9 +197,10 @@ object TransferMoneySink extends MoneySink {
 
 !SLIDE
 
-## コンテキストを実装する
+### コンテキストを実装する
 
 ```scala
+// 送金コンテキスト
 case class TransferMoneyContext(from: BankAccount, to: BankAccount) {
 
   // ロールを合成できるようにする
@@ -185,7 +223,7 @@ case class TransferMoneyContext(from: BankAccount, to: BankAccount) {
 
 !SLIDE
 
-## 使い方
+### 使い方
 
 ```scala
 object Main extends App {
@@ -194,10 +232,110 @@ object Main extends App {
 
   // BankAccount#sendと書くとコンパイルエラー
 
-  val (newFrom, newTo) = TransferMoneyContext(from, to).execute(Money(10, JPY))
+  val context = TransferMoneyContext(from, to)
+  // 送金の実行　
+  val (newFrom, newTo) = context.execute(Money(10, JPY))
   println(newFrom, newTo)
 
   // BankAccount#sendと書くとコンパイルエラー
+}
+```
+
+!SLIDE
+
+## Roleを型クラスを使って実装する
+
+!SLIDE
+
+ECサイトの商品購入について
+
+```scala
+// Data
+trait User extends Entity[UserId] {
+  // ...
+}
+
+// Data
+trait Group extends Entity[GroupId] {
+  // ...
+}
+```
+
+!SLIDE
+
+### Methodless Role
+
+```scala
+// Methodless Role
+trait Purchaser[A] {
+
+  def purchase(self: A, product: Product): A
+
+}
+```
+
+!SLIDE
+
+### Methodful Role
+
+```scala
+// Methodful Role
+object UserPurchaser extends Purchaser[User] {
+
+  def purchase(self: User, product: Product): User = {
+    // ...
+  }
+
+}
+
+// Methodful Role
+object GroupPurchaser extends Purchaser[Group] {
+
+  def purchase(self: Group, product: Product): Group = {
+    // ...
+  }
+
+}
+```
+
+!SLIDE
+
+### Context
+
+異なる型であるが同じインターフェイスで操作できる(アドホック多相)
+
+```scala
+// Context
+case class ProductPurchaseContext() {
+  implicit val up = UserPurchaser
+  implicit val gp = GroupPurchaser
+
+  implicit def toPurchaserOps[A](self: A)
+    (implicit purchaser: Purchaser[A]) =
+      new {
+       def purchase(product: Product): A =
+               purchaser.purchase(self, product)
+      }
+
+  def execute(user: User, product: Product) =
+    user.purchase(product) // ここ
+
+  def execute(group: Group, product: Product) =
+    group.purchase(product) // ここ
+ 
+}
+```
+
+!SLIDE
+
+### Main
+
+```scala
+object Main extends App {
+// ...
+ProductPurchaseContext().execute(User("Junichi","Kato"), Product(ProductType.MacPro))
+ProductPurchaseContext().execute(Group("Capsule Corp"), Product(ProductType.MacPro))
+// ...
 }
 ```
 
