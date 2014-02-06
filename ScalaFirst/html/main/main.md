@@ -513,6 +513,8 @@ res0.map(_ * 2)
 }.foreach(println)
 ```
 
+!SLIDE
+
 ## BTree
 
 https://gist.github.com/j5ik2o/7332812
