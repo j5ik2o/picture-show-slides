@@ -517,8 +517,8 @@ res0.map(_ * 2)
 
 ## BTree
 
-https://gist.github.com/j5ik2o/7332812
+[Q](https://gist.github.com/j5ik2o/7332812)
 
-https://gist.github.com/j5ik2o/7611983
+[A](https://gist.github.com/j5ik2o/7611983)
 
 
