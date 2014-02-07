@@ -291,8 +291,7 @@ val p3 = pOpt2.getOrElse(Person(1, "b")) // Noneの時に返すデフォルト�
 !SLIDE
 
 - タプル型
-
-複数個の値を一塊に扱う型
+    - 複数個の値を一塊に扱う型
 
 ```scala
 val t2 = (1, 2)
@@ -530,7 +529,7 @@ res0.map(_ * 2)
 
 !SLIDE
 
-## BTree
+## Binary Tree
 
 [Q](https://gist.github.com/j5ik2o/7332812)
 
