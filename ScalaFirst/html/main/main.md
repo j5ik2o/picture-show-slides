@@ -422,7 +422,13 @@ println(convertNumberToString(0.5)) // エラー
 
 ```scala
 case class PersonName(firstName: String, lastName: String)
-case class PostalAddress(zipCode: String, prefName: String, cityName: String, addressName: String, buildingName: Option[String])
+case class PostalAddress(
+  zipCode: String,
+  prefName: String,
+  cityName: String,
+  addressName: String,
+  buildingName: Option[String]
+)
 case class Person(name: PersonName, postalAddress: PostalAddress)
 
 val persons = List(
@@ -432,8 +438,14 @@ val persons = List(
         ),
 ...)
 
-def hasLastNameAndPrefName(person: Person, lastName: String, prefName: String) = preson match {
-  case Person(PersonName(_, l), PostalAddress(_, p, _, _, _) if l == lastName && p == prefName => true
+def hasLastNameAndPrefName(
+  person: Person,
+  lastName: String,
+  prefName: String) = preson match {
+  case Person(
+  	 PersonName(_, l),
+	 PostalAddress(_, p, _, _, _)
+       ) if l == lastName && p == prefName => true
   case _ => false
 }
 ```

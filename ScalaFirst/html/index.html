@@ -7,7 +7,7 @@
         <script type="text/javascript" src="assets/js/jquery.min.js"></script>
         <script type="text/javascript" src="assets/js/show.js"></script>
         <script type="text/javascript" src="assets/js/prettify/prettify.js"></script>
-        <script type="text/javascript" src="assets/js/prettify/lang-apollo.js"></script><script type="text/javascript" src="assets/js/prettify/lang-css.js"></script><script type="text/javascript" src="assets/js/prettify/lang-hs.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lisp.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lua.js"></script><script type="text/javascript" src="assets/js/prettify/lang-ml.js"></script><script type="text/javascript" src="assets/js/prettify/lang-proto.js"></script><script type="text/javascript" src="assets/js/prettify/lang-scala.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vb.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vhdl.js"></script><script type="text/javascript" src="assets/js/prettify/lang-wiki.js"></script><script type="text/javascript" src="assets/js/prettify/lang-yaml.js"></script><link type="text/css" rel="stylesheet" href="css/custom.css?1391765557061" />
+        <script type="text/javascript" src="assets/js/prettify/lang-apollo.js"></script><script type="text/javascript" src="assets/js/prettify/lang-css.js"></script><script type="text/javascript" src="assets/js/prettify/lang-hs.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lisp.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lua.js"></script><script type="text/javascript" src="assets/js/prettify/lang-ml.js"></script><script type="text/javascript" src="assets/js/prettify/lang-proto.js"></script><script type="text/javascript" src="assets/js/prettify/lang-scala.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vb.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vhdl.js"></script><script type="text/javascript" src="assets/js/prettify/lang-wiki.js"></script><script type="text/javascript" src="assets/js/prettify/lang-yaml.js"></script><link type="text/css" rel="stylesheet" href="css/custom.css?1391765677678" />
       <script type="text/javascript"><!--
         window.onload=function() { prettyPrint(); };
       --></script>
@@ -322,7 +322,13 @@ println(convertNumberToString(0.5)) // エラー
       </div><div class="content" id="slide-30"><div class="container">
                   <ul><li>ケースクラスによるパターンマッチ
 </li></ul><pre><code class="prettyprint lang-scala">case class PersonName(firstName: String, lastName: String)
-case class PostalAddress(zipCode: String, prefName: String, cityName: String, addressName: String, buildingName: Option[String])
+case class PostalAddress(
+  zipCode: String,
+  prefName: String,
+  cityName: String,
+  addressName: String,
+  buildingName: Option[String]
+)
 case class Person(name: PersonName, postalAddress: PostalAddress)
 
 val persons = List(
@@ -332,8 +338,14 @@ val persons = List(
         ),
 ...)
 
-def hasLastNameAndPrefName(person: Person, lastName: String, prefName: String) = preson match {
-  case Person(PersonName(_, l), PostalAddress(_, p, _, _, _) if l == lastName &amp;&amp; p == prefName =&gt; true
+def hasLastNameAndPrefName(
+  person: Person,
+  lastName: String,
+  prefName: String) = preson match {
+  case Person(
+  	 PersonName(_, l),
+	 PostalAddress(_, p, _, _, _)
+       ) if l == lastName &amp;&amp; p == prefName =&gt; true
   case _ =&gt; false
 }
 </code></pre>
