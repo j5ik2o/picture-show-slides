@@ -1,6 +1,6 @@
 !SLIDE
 
-# はじめてのScala
+# ざっくりScala入門
 
 @j5ik2o
 
@@ -8,7 +8,7 @@
 
 普段なにやっているか
 
-- Finagleを利用したバックエンドシステムのアーキテクト
+- Scala/Finagleを利用したバックエンドシステムのアーキテクト
 - SISIOH project http://sisioh.org/
     - https://github.com/sisioh/trinity
 
@@ -71,7 +71,7 @@ Hello, World!
 
 !SLIDE
 
-## Scalaプログラミングの基礎
+## Scalaプログラミング基礎編
 
 !SLIDE
 
@@ -426,7 +426,7 @@ def hasLastNameAndPrefName(person: Person, lastName: String, prefName: String) =
 
 !SLIDE
 
-## 応用編
+## Scalaプログラミング応用編
 
 - 命令型で記述。
 
