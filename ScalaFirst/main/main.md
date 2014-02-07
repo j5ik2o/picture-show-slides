@@ -437,7 +437,11 @@ val persons = List(
         PostalAddress("000-0000", "東京都", "目黒区", "下目黒")
         ),
 ...)
+```
 
+!SLIDE
+
+```scala
 def hasLastNameAndPrefName(
   person: Person,
   lastName: String,

@@ -7,7 +7,7 @@
         <script type="text/javascript" src="assets/js/jquery.min.js"></script>
         <script type="text/javascript" src="assets/js/show.js"></script>
         <script type="text/javascript" src="assets/js/prettify/prettify.js"></script>
-        <script type="text/javascript" src="assets/js/prettify/lang-apollo.js"></script><script type="text/javascript" src="assets/js/prettify/lang-css.js"></script><script type="text/javascript" src="assets/js/prettify/lang-hs.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lisp.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lua.js"></script><script type="text/javascript" src="assets/js/prettify/lang-ml.js"></script><script type="text/javascript" src="assets/js/prettify/lang-proto.js"></script><script type="text/javascript" src="assets/js/prettify/lang-scala.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vb.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vhdl.js"></script><script type="text/javascript" src="assets/js/prettify/lang-wiki.js"></script><script type="text/javascript" src="assets/js/prettify/lang-yaml.js"></script><link type="text/css" rel="stylesheet" href="css/custom.css?1391765677678" />
+        <script type="text/javascript" src="assets/js/prettify/lang-apollo.js"></script><script type="text/javascript" src="assets/js/prettify/lang-css.js"></script><script type="text/javascript" src="assets/js/prettify/lang-hs.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lisp.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lua.js"></script><script type="text/javascript" src="assets/js/prettify/lang-ml.js"></script><script type="text/javascript" src="assets/js/prettify/lang-proto.js"></script><script type="text/javascript" src="assets/js/prettify/lang-scala.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vb.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vhdl.js"></script><script type="text/javascript" src="assets/js/prettify/lang-wiki.js"></script><script type="text/javascript" src="assets/js/prettify/lang-yaml.js"></script><link type="text/css" rel="stylesheet" href="css/custom.css?1391765724691" />
       <script type="text/javascript"><!--
         window.onload=function() { prettyPrint(); };
       --></script>
@@ -337,8 +337,10 @@ val persons = List(
         PostalAddress(&quot;000-0000&quot;, &quot;東京都&quot;, &quot;目黒区&quot;, &quot;下目黒&quot;)
         ),
 ...)
-
-def hasLastNameAndPrefName(
+</code></pre>
+                </div>
+      </div><div class="content" id="slide-31"><div class="container">
+                  <pre><code class="prettyprint lang-scala">def hasLastNameAndPrefName(
   person: Person,
   lastName: String,
   prefName: String) = preson match {
@@ -350,7 +352,7 @@ def hasLastNameAndPrefName(
 }
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-31"><div class="container">
+      </div><div class="content" id="slide-32"><div class="container">
                   <h2 id="Scala%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E5%BF%9C%E7%94%A8%E7%B7%A8">Scalaプログラミング応用編</h2><ul><li>命令型で記述。
 </li></ul><pre><code class="prettyprint lang-scala">for (n &lt;- 1 to 100) {
   if (n % 15 == 0) {
@@ -365,7 +367,7 @@ def hasLastNameAndPrefName(
 }
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-32"><div class="container">
+      </div><div class="content" id="slide-33"><div class="container">
                   <ul><li>関数型で記述。その前に
 </li></ul><pre><code class="prettyprint lang-scala">scala&gt; 1.to(100)
 res0: scala.collection.immutable.Range.Inclusive = Range(1, ..., 100)
@@ -373,7 +375,7 @@ scala&gt; res0.map({v :Int =&gt; v * 2})
 res1: scala.collection.immutable.IndexedSeq[Int] = Vector(2, ..., 200)
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-33"><div class="container">
+      </div><div class="content" id="slide-34"><div class="container">
                   <pre><code class="prettyprint lang-scala"> val f = {n:Int =&gt; n.toString}
  /*
  val f = new Function1[Int,String]{
@@ -383,14 +385,14 @@ res1: scala.collection.immutable.IndexedSeq[Int] = Vector(2, ..., 200)
  (1 to 100).map(f)
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-34"><div class="container">
+      </div><div class="content" id="slide-35"><div class="container">
                   <pre><code class="prettyprint lang-scala">res0.map{v :Int =&gt; v * 2}
 res0.map{v =&gt; v * 2}
 res0.map{_ * 2}
 res0.map(_ * 2)
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-35"><div class="container">
+      </div><div class="content" id="slide-36"><div class="container">
                   <ul><li>関数型で記述。
 </li></ul><pre><code class="prettyprint lang-scala">(1 to 100).map({
   case n if n % 15 == 0 =&gt; &quot;FizzBuzz&quot;
@@ -400,7 +402,7 @@ res0.map(_ * 2)
 }).foreach(println)
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-36"><div class="container">
+      </div><div class="content" id="slide-37"><div class="container">
                   <ul><li>他の書き方
 </li></ul><pre><code class="prettyprint lang-scala"> (1 to 100).map {
    n =&gt; if (n % 15 == 0) &quot;FizzBuzz&quot;
@@ -410,7 +412,7 @@ res0.map(_ * 2)
 }.foreach(println)
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-37"><div class="container">
+      </div><div class="content" id="slide-38"><div class="container">
                   <pre><code class="prettyprint lang-scala">(1 to 100).map {
   case n =&gt; if (n % 15 == 0) &quot;FizzBuzz&quot;
     else if (n % 3 == 0) =&gt; &quot;Fizz&quot;
@@ -419,7 +421,7 @@ res0.map(_ * 2)
 }.foreach(println)
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-38"><div class="container">
+      </div><div class="content" id="slide-39"><div class="container">
                   <h2 id="Binary+Tree">Binary Tree</h2><p><a  href="https://gist.github.com/j5ik2o/7332812">Q</a>
 </p><p><a  href="https://gist.github.com/j5ik2o/7611983">A</a>
 </p>
