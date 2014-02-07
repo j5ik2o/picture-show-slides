@@ -1,13 +1,13 @@
 <html>
       <head>
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-        <title>いまさらScalaでFizzBuzz</title>
+        <title>ざっくりScala入門</title>
         <link type="text/css" rel="stylesheet" href="assets/css/show.css" />
         <link type="text/css" rel="stylesheet" href="assets/css/prettify.css" />
         <script type="text/javascript" src="assets/js/jquery.min.js"></script>
         <script type="text/javascript" src="assets/js/show.js"></script>
         <script type="text/javascript" src="assets/js/prettify/prettify.js"></script>
-        <script type="text/javascript" src="assets/js/prettify/lang-apollo.js"></script><script type="text/javascript" src="assets/js/prettify/lang-css.js"></script><script type="text/javascript" src="assets/js/prettify/lang-hs.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lisp.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lua.js"></script><script type="text/javascript" src="assets/js/prettify/lang-ml.js"></script><script type="text/javascript" src="assets/js/prettify/lang-proto.js"></script><script type="text/javascript" src="assets/js/prettify/lang-scala.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vb.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vhdl.js"></script><script type="text/javascript" src="assets/js/prettify/lang-wiki.js"></script><script type="text/javascript" src="assets/js/prettify/lang-yaml.js"></script><link type="text/css" rel="stylesheet" href="css/custom.css?1391692772810" />
+        <script type="text/javascript" src="assets/js/prettify/lang-apollo.js"></script><script type="text/javascript" src="assets/js/prettify/lang-css.js"></script><script type="text/javascript" src="assets/js/prettify/lang-hs.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lisp.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lua.js"></script><script type="text/javascript" src="assets/js/prettify/lang-ml.js"></script><script type="text/javascript" src="assets/js/prettify/lang-proto.js"></script><script type="text/javascript" src="assets/js/prettify/lang-scala.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vb.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vhdl.js"></script><script type="text/javascript" src="assets/js/prettify/lang-wiki.js"></script><script type="text/javascript" src="assets/js/prettify/lang-yaml.js"></script><link type="text/css" rel="stylesheet" href="css/custom.css?1391750008733" />
       <script type="text/javascript"><!--
         window.onload=function() { prettyPrint(); };
       --></script>
@@ -16,12 +16,12 @@
         <div id="slides">
           <div id="reel">
             <div class="content" id="slide-0"><div class="container">
-                  <h1 id="%E3%81%AF%E3%81%98%E3%82%81%E3%81%A6%E3%81%AEScala">はじめてのScala</h1><p>@j5ik2o
+                  <h1 id="%E3%81%96%E3%81%A3%E3%81%8F%E3%82%8AScala%E5%85%A5%E9%96%80">ざっくりScala入門</h1><p>@j5ik2o
 </p>
                 </div>
       </div><div class="content" id="slide-1"><div class="container">
                   <p>普段なにやっているか
-</p><ul><li>Finagleを利用したバックエンドシステムのアーキテクト
+</p><ul><li>Scala/Finagleを利用したバックエンドシステムのアーキテクト
 </li><li><p>SISIOH project http://sisioh.org/
 </p><ul><li>https://github.com/sisioh/trinity
 </li></ul></li></ul>
@@ -64,7 +64,7 @@ Hello, World!
 </code></pre>
                 </div>
       </div><div class="content" id="slide-7"><div class="container">
-                  <h2 id="Scala%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E3%81%AE%E5%9F%BA%E7%A4%8E">Scalaプログラミングの基礎</h2>
+                  <h2 id="Scala%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E5%9F%BA%E7%A4%8E%E7%B7%A8">Scalaプログラミング基礎編</h2>
                 </div>
       </div><div class="content" id="slide-8"><div class="container">
                   <h3 id="%E5%A4%89%E6%95%B0">変数</h3><ul><li>最代入可能な変数は<code>var</code>を使って宣言する。変数の型名は変数名の後ろに記述する(型アノテーション)。
@@ -328,7 +328,7 @@ def hasLastNameAndPrefName(person: Person, lastName: String, prefName: String) =
 </code></pre>
                 </div>
       </div><div class="content" id="slide-30"><div class="container">
-                  <h2 id="%E5%BF%9C%E7%94%A8%E7%B7%A8">応用編</h2><ul><li>命令型で記述。
+                  <h2 id="Scala%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E5%BF%9C%E7%94%A8%E7%B7%A8">Scalaプログラミング応用編</h2><ul><li>命令型で記述。
 </li></ul><pre><code class="prettyprint lang-scala">for (n &lt;- 1 to 100) {
   if (n % 15 == 0) {
     println(&quot;FizzBuzz&quot;)
