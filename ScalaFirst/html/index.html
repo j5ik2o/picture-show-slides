@@ -7,7 +7,7 @@
         <script type="text/javascript" src="assets/js/jquery.min.js"></script>
         <script type="text/javascript" src="assets/js/show.js"></script>
         <script type="text/javascript" src="assets/js/prettify/prettify.js"></script>
-        <script type="text/javascript" src="assets/js/prettify/lang-apollo.js"></script><script type="text/javascript" src="assets/js/prettify/lang-css.js"></script><script type="text/javascript" src="assets/js/prettify/lang-hs.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lisp.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lua.js"></script><script type="text/javascript" src="assets/js/prettify/lang-ml.js"></script><script type="text/javascript" src="assets/js/prettify/lang-proto.js"></script><script type="text/javascript" src="assets/js/prettify/lang-scala.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vb.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vhdl.js"></script><script type="text/javascript" src="assets/js/prettify/lang-wiki.js"></script><script type="text/javascript" src="assets/js/prettify/lang-yaml.js"></script><link type="text/css" rel="stylesheet" href="css/custom.css?1391754379328" />
+        <script type="text/javascript" src="assets/js/prettify/lang-apollo.js"></script><script type="text/javascript" src="assets/js/prettify/lang-css.js"></script><script type="text/javascript" src="assets/js/prettify/lang-hs.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lisp.js"></script><script type="text/javascript" src="assets/js/prettify/lang-lua.js"></script><script type="text/javascript" src="assets/js/prettify/lang-ml.js"></script><script type="text/javascript" src="assets/js/prettify/lang-proto.js"></script><script type="text/javascript" src="assets/js/prettify/lang-scala.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-sql.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vb.js"></script><script type="text/javascript" src="assets/js/prettify/lang-vhdl.js"></script><script type="text/javascript" src="assets/js/prettify/lang-wiki.js"></script><script type="text/javascript" src="assets/js/prettify/lang-yaml.js"></script><link type="text/css" rel="stylesheet" href="css/custom.css?1391765437307" />
       <script type="text/javascript"><!--
         window.onload=function() { prettyPrint(); };
       --></script>
@@ -174,6 +174,17 @@ println(m3) // Money(110, JPY)
 </code></pre>
                 </div>
       </div><div class="content" id="slide-16"><div class="container">
+                  <h3 id="%E3%82%B7%E3%83%B3%E3%82%B0%E3%83%AB%E3%83%88%E3%83%B3">シングルトン</h3><pre><code class="prettyprint lang-scala">object Money {
+
+  val JPY = Currency.getInstance(&quot;JPY&quot;)
+
+}
+
+val m1 = Money(100, Money.JPY) + Money(10, Money.JPY)
+println(m1) // Money(110, JPY)
+</code></pre>
+                </div>
+      </div><div class="content" id="slide-17"><div class="container">
                   <h3 id="%E9%96%A2%E6%95%B0">関数</h3><ul><li>関数はオブジェクトの一種です。変数に格納したり、メソッドの引数などに渡すことが可能です。
 </li><li>引数なしで整数値を返す、関数を記述する
 </li></ul><pre><code class="prettyprint lang-scala">val f = { () =&gt; 1 }
@@ -181,14 +192,14 @@ println(m3) // Money(110, JPY)
 println(f()) // println(f.apply()) // 1
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-17"><div class="container">
+      </div><div class="content" id="slide-18"><div class="container">
                   <ul><li>引数を二倍にして返す、関数を記述する
 </li></ul><pre><code class="prettyprint lang-scala">val f = { x: Int =&gt; x * 2 }
 
 println(f(2)) // f.apply(2) // 4
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-18"><div class="container">
+      </div><div class="content" id="slide-19"><div class="container">
                   <ul><li>メソッドの引数や戻り値に関数を利用する
 </li></ul><pre><code class="prettyprint lang-scala">def foreach(array: Array[Int], f: Int =&gt; Unit) = {
   for (value &lt;- array) f(value)
@@ -197,7 +208,7 @@ println(f(2)) // f.apply(2) // 4
 foreach(Array(1, 2, 3), { n =&gt; println(n) })
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-19"><div class="container">
+      </div><div class="content" id="slide-20"><div class="container">
                   <h3 id="%E3%82%88%E3%81%8F%E4%BD%BF%E3%81%86%E5%9E%8B">よく使う型</h3><ul><li>Option型(Maybeモナド)
 </li></ul><pre><code class="prettyprint lang-scala">case class Person(id: Int, name: String)
 
@@ -212,7 +223,7 @@ val p2 = pOpt2.get // NoSuchElementException
 val p3 = pOpt2.getOrElse(Person(1, &quot;b&quot;)) // Noneの時に返すデフォルト値を指定
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-20"><div class="container">
+      </div><div class="content" id="slide-21"><div class="container">
                   <ul><li>タプル型
 </li></ul><p>複数個の値を一塊に扱う型
 </p><pre><code class="prettyprint lang-scala">val t2 = (1, 2)
@@ -222,7 +233,7 @@ val t3 = (1, 2, 3)
 val t4 = (1, 2, 3, 4)
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-21"><div class="container">
+      </div><div class="content" id="slide-22"><div class="container">
                   <ul><li>配列(可変コレクション)
 </li></ul><pre><code class="prettyprint lang-scala">val a = Array(1, 2, 3, 4, 5)
 val e = a(0) // 一番目にアクセス
@@ -230,21 +241,21 @@ a(0) = 100
 println(a) // Array(100, 2, 3, 4, 5)
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-22"><div class="container">
+      </div><div class="content" id="slide-23"><div class="container">
                   <ul><li>リスト(不変コレクション)
 </li></ul><pre><code class="prettyprint lang-scala">val l = List(1, 2, 3, 4, 5)
 val e = l(0) // 一番目にアクセス
 l(0) = 1 // コンパイルエラー
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-23"><div class="container">
+      </div><div class="content" id="slide-24"><div class="container">
                   <ul><li>マップ(不変コレクション)
 </li></ul><pre><code class="prettyprint lang-scala">val m = Map(1 -&gt; &quot;a&quot;, 2 -&gt; &quot;b&quot;, 3 -&gt; &quot;c&quot;) // Map[Int, String]
 val v = m(1) //: String &quot;a&quot;
 val vOpt = m.get(1) //: Option[String] Some(&quot;a&quot;)
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-24"><div class="container">
+      </div><div class="content" id="slide-25"><div class="container">
                   <h4 id="%E8%A6%81%E7%B4%A0%E3%81%AE%E7%B9%B0%E3%82%8A%E8%BF%94%E3%81%97%E5%87%A6%E7%90%86">要素の繰り返し処理</h4><pre><code class="prettyprint lang-scala">val l = List(1,2,3) // Arrayも同じ
 
 // for式
@@ -261,7 +272,7 @@ for(t &lt;- m) println(t) // t は (k,v)
 m.foreach(println)
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-25"><div class="container">
+      </div><div class="content" id="slide-26"><div class="container">
                   <h4 id="%E8%A6%81%E7%B4%A0%E3%82%92%E6%A4%9C%E7%B4%A2%E3%81%99%E3%82%8B">要素を検索する</h4><pre><code class="prettyprint lang-scala">val l = List(1, 2, 3)
 
 l.find(_ == 2) // Option[Int]
@@ -270,7 +281,7 @@ val m = Map(1 -&gt; &quot;a&quot;, 2 -&gt; &quot;b&quot;, 3 -&gt; &quot;c&quot;)
 m.find(_._1 == 1) // Option[(Int, String)]
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-26"><div class="container">
+      </div><div class="content" id="slide-27"><div class="container">
                   <h4 id="%E8%A6%81%E7%B4%A0%E3%81%AE%E5%A4%89%E6%8F%9B">要素の変換</h4><pre><code class="prettyprint lang-scala">val l = List(1, 2, 3)
 val l2 = l.map(_ * 2) // List(2, 4, 6)
 
@@ -279,7 +290,7 @@ val m2 = m.map(e =&gt; (e._1, e._2 + e._1)) // Map(1 -&gt; a1, 2 -&gt; b2, 3 -&g
 val m3 = m.map{ case (k, v) =&gt; (k, v + k) } // パターンマッチ機能を持つ、部分関数を使うともっと簡潔に記述できる
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-27"><div class="container">
+      </div><div class="content" id="slide-28"><div class="container">
                   <h3 id="%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3%E3%83%9E%E3%83%83%E3%83%81">パターンマッチ</h3><ul><li>数値のパターンマッチ
 </li></ul><pre><code class="prettyprint lang-scala">def numberMatch(n: Int) = n match {
   case 1 =&gt; println(&quot;one&quot;)
@@ -293,7 +304,7 @@ numberMatch(3) // two or three
 numberMatch(4) // otherwise
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-28"><div class="container">
+      </div><div class="content" id="slide-29"><div class="container">
                   <ul><li>match式は値を返す
 </li></ul><pre><code class="prettyprint lang-scala">def convertToString(obj: Any) = obj match {
   case n:Int =&gt; &quot;one&quot; // Int型の場合
@@ -308,7 +319,7 @@ println(convertNumberToString(List(3,3,3)) // three
 println(convertNumberToString(0.5)) // エラー
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-29"><div class="container">
+      </div><div class="content" id="slide-30"><div class="container">
                   <ul><li>ケースクラスによるパターンマッチ
 </li></ul><pre><code class="prettyprint lang-scala">case class PersonName(firstName: String, lastName: String)
 case class PostalAddress(zipCode: String, prefName: String, cityName: String, addressName: String, buildingName: Option[String])
@@ -327,7 +338,7 @@ def hasLastNameAndPrefName(person: Person, lastName: String, prefName: String) =
 }
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-30"><div class="container">
+      </div><div class="content" id="slide-31"><div class="container">
                   <h2 id="Scala%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E5%BF%9C%E7%94%A8%E7%B7%A8">Scalaプログラミング応用編</h2><ul><li>命令型で記述。
 </li></ul><pre><code class="prettyprint lang-scala">for (n &lt;- 1 to 100) {
   if (n % 15 == 0) {
@@ -342,7 +353,7 @@ def hasLastNameAndPrefName(person: Person, lastName: String, prefName: String) =
 }
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-31"><div class="container">
+      </div><div class="content" id="slide-32"><div class="container">
                   <ul><li>関数型で記述。その前に
 </li></ul><pre><code class="prettyprint lang-scala">scala&gt; 1.to(100)
 res0: scala.collection.immutable.Range.Inclusive = Range(1, ..., 100)
@@ -350,7 +361,7 @@ scala&gt; res0.map({v :Int =&gt; v * 2})
 res1: scala.collection.immutable.IndexedSeq[Int] = Vector(2, ..., 200)
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-32"><div class="container">
+      </div><div class="content" id="slide-33"><div class="container">
                   <pre><code class="prettyprint lang-scala"> val f = {n:Int =&gt; n.toString}
  /*
  val f = new Function1[Int,String]{
@@ -360,14 +371,14 @@ res1: scala.collection.immutable.IndexedSeq[Int] = Vector(2, ..., 200)
  (1 to 100).map(f)
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-33"><div class="container">
+      </div><div class="content" id="slide-34"><div class="container">
                   <pre><code class="prettyprint lang-scala">res0.map{v :Int =&gt; v * 2}
 res0.map{v =&gt; v * 2}
 res0.map{_ * 2}
 res0.map(_ * 2)
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-34"><div class="container">
+      </div><div class="content" id="slide-35"><div class="container">
                   <ul><li>関数型で記述。
 </li></ul><pre><code class="prettyprint lang-scala">(1 to 100).map({
   case n if n % 15 == 0 =&gt; &quot;FizzBuzz&quot;
@@ -377,7 +388,7 @@ res0.map(_ * 2)
 }).foreach(println)
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-35"><div class="container">
+      </div><div class="content" id="slide-36"><div class="container">
                   <ul><li>他の書き方
 </li></ul><pre><code class="prettyprint lang-scala"> (1 to 100).map {
    n =&gt; if (n % 15 == 0) &quot;FizzBuzz&quot;
@@ -387,7 +398,7 @@ res0.map(_ * 2)
 }.foreach(println)
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-36"><div class="container">
+      </div><div class="content" id="slide-37"><div class="container">
                   <pre><code class="prettyprint lang-scala">(1 to 100).map {
   case n =&gt; if (n % 15 == 0) &quot;FizzBuzz&quot;
     else if (n % 3 == 0) =&gt; &quot;Fizz&quot;
@@ -396,7 +407,7 @@ res0.map(_ * 2)
 }.foreach(println)
 </code></pre>
                 </div>
-      </div><div class="content" id="slide-37"><div class="container">
+      </div><div class="content" id="slide-38"><div class="container">
                   <h2 id="BTree">BTree</h2><p><a  href="https://gist.github.com/j5ik2o/7332812">Q</a>
 </p><p><a  href="https://gist.github.com/j5ik2o/7611983">A</a>
 </p>

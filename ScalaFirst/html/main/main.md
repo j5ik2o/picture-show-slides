@@ -219,6 +219,21 @@ println(m3) // Money(110, JPY)
 
 !SLIDE
 
+### シングルトン
+
+```scala
+object Money {
+
+  val JPY = Currency.getInstance("JPY")
+
+}
+
+val m1 = Money(100, Money.JPY) + Money(10, Money.JPY)
+println(m1) // Money(110, JPY)
+```
+
+!SLIDE
+
 ### 関数
 
 - 関数はオブジェクトの一種です。変数に格納したり、メソッドの引数などに渡すことが可能です。
